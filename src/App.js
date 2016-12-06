@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { SignIn } from './containers/SignIn';
 import { Link } from 'react-router';
 

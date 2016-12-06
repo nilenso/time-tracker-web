@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './App';
-import { SignIn } from './containers/SignIn';
 import { About } from './components/About';
 import { TimersDisplay } from './components/TimersDisplay';
 import { rootReducer } from './reducers';
