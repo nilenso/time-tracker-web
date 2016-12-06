@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { userSignedIn } from '../actions';
 
 function mapStateToProps(state) {
-  if (state.googleUser) {
+  if (state.get('googleUser')) {
     return {
       signedIn: true
     }

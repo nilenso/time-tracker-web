@@ -1,10 +1,9 @@
+import Immutable from 'immutable';
 
-export function rootReducer(state = {googleUser: null}, action) {
+export function rootReducer(state = Immutable.Map({googleUser: null}), action) {
   switch (action.type) {
     case 'USER_SIGNED_IN':
-      return Object.assign({}, state, {
-        googleUser: action.googleUser
-      })
+      return state.set('googleUser', action.googleUser);
 
     default:
       return state;
