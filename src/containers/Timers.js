@@ -14,18 +14,25 @@ class Timers extends Component {
   render() {
     if (this.props.isFetching) {
       return (
-        <p>handcrafting the list of timers...please wait</p>
+        <p>{"fetching timers..."}</p>
       )
     }
 
-    if (this.props.timers.size === 0) {
+    if (this.props.fetchFailed) {
       return (
-        <p>golly gee you have no timers don't you feel terrible?</p>
+        <p>{"fetching timers failed :("}</p>
       )
     }
 
-    const timerElements = this.props.timers.map((timer) => {
+    if (this.props.entities.get('timers').size === 0) {
+      return (
+        <p>{"you have no timers!"}</p>
+      )
+    }
+
+    const timerElements = this.props.entities.get('timers').map((timer) => {
       let d = moment.unix(timer.get('time-created'))
+      const project = this.props.entities.get('projects').get(timer.get('id'))
       return (
         <li key={timer.get('id')}>
           <ul>
@@ -33,7 +40,7 @@ class Timers extends Component {
               Timer ID: {timer.get('id')}
             </li>
             <li>
-              Project ID: {timer.get('project-id')}
+              Project: {project.get('name')}
             </li>
             <li>
               Time created: {d.toString()}
@@ -52,10 +59,12 @@ class Timers extends Component {
 }
 
 function mapStateToProps(state) {
+  const timersState = state.get('timers')
   return {
-    timers: state.get('timers').get('items'),
-    isFetching: state.get('timers').get('isFetching'),
-    isStale: state.get('timers').get('isStale'),
+    entities: state.get('entities'),
+    isFetching: timersState.get('isFetching'),
+    isStale: timersState.get('isStale'),
+    fetchFailed: timersState.get('fetchFailed'),
     authToken: state.get('googleUser').getAuthResponse().id_token
   }
 }

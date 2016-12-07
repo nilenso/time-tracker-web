@@ -9,10 +9,17 @@ function googleUserReducer(state = null, action) {
   }
 }
 
+function entitiesReducer(state = Immutable.fromJS({
+  timers: {},
+  projects: {}
+}), action) {
+  return state.mergeDeep(action.entities)
+}
+
 function timersReducer(state = Immutable.Map({
   isFetching: false,
   isStale: true,
-  items: Immutable.List([])
+  fetchFailed: false,
 }), action) {
   switch (action.type) {
     case 'REQUEST_TIMERS':
@@ -21,17 +28,23 @@ function timersReducer(state = Immutable.Map({
         isStale: false
       });
 
-    case 'RECEIVE_TIMERS':
+    case 'RECEIVE_TIMERS_PROJECTS':
       return state.merge({
         isFetching: false,
         isStale: false,
-        items: Immutable.List(action.items)
+        fetchFailed: false
       });
 
     case 'MAKE_TIMERS_STALE':
       return state.merge({
         isStale: true
       });
+
+    case 'REQUEST_TIMERS_FAILED':
+      return state.merge({
+        isFetching: false,
+        fetchFailed: true
+      })
 
     default:
       return state;
@@ -41,6 +54,7 @@ function timersReducer(state = Immutable.Map({
 export function rootReducer(state = Immutable.Map({}), action) {
     return state.merge({
       googleUser: googleUserReducer(state.get('googleUser'), action),
-      timers: timersReducer(state.get('timers'), action)
+      timers: timersReducer(state.get('timers'), action),
+      entities: entitiesReducer(state.get('entities'), action)
     });
 }
