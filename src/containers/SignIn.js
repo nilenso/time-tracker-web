@@ -1,6 +1,6 @@
 import { SignInDisplay } from '../components/SignInDisplay';
 import { connect } from 'react-redux';
-import { userSignedIn } from '../actions';
+import { userSignedIn, makeWSConnection } from '../actions';
 
 function mapStateToProps(state) {
   if (state.get('googleUser')) {
@@ -19,6 +19,8 @@ function mapDispatchToProps(dispatch) {
   return {
     onSignIn: (googleUser) => {
       dispatch(userSignedIn(googleUser));
+      dispatch(
+        makeWSConnection(googleUser.getAuthResponse().id_token));
     }
   }
 }

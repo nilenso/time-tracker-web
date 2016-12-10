@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { fetchTimers } from '../actions'
-import moment from 'moment'
+import { fetchTimers, startTimer, stopTimer } from '../actions'
+import { ElapsedTime } from '../components/ElapsedTime'
 
 class Timers extends Component {
   componentDidMount() {
@@ -30,25 +30,36 @@ class Timers extends Component {
       )
     }
 
-    const timerElements = this.props.entities.get('timers').map((timer) => {
-      let d = moment.unix(timer.get('time-created'))
+    const timerElements = this.props.entities.get('timers')
+                                             .valueSeq()
+                                             .map((timer) => {
       const project = this.props.entities.get('projects').get(timer.get('id'))
+
+      const wsConnection = this.props.wsConnection
+      const onTimerClick = () => {
+        if (timer.get('started-time')) {
+          this.props.dispatch(stopTimer(timer, wsConnection));
+        }
+        else {
+          this.props.dispatch(startTimer(timer, wsConnection));
+        }
+      }
+
       return (
         <li key={timer.get('id')}>
           <ul>
             <li>
-              Timer ID: {timer.get('id')}
-            </li>
-            <li>
               Project: {project.get('name')}
             </li>
             <li>
-              Time created: {d.toString()}
+              <ElapsedTime startedEpoch={timer.get('started-time')}
+                           duration={timer.get('duration')}
+                           onClick={() => onTimerClick()}/>
             </li>
           </ul>
         </li>
       )
-    })
+    });
 
     return (
       <ul>
@@ -65,7 +76,8 @@ function mapStateToProps(state) {
     isFetching: timersState.get('isFetching'),
     isStale: timersState.get('isStale'),
     fetchFailed: timersState.get('fetchFailed'),
-    authToken: state.get('googleUser').getAuthResponse().id_token
+    authToken: state.get('googleUser').getAuthResponse().id_token,
+    wsConnection: state.get('wsConnection')
   }
 }
 
