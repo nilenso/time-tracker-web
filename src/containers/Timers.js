@@ -1,7 +1,9 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import { fetchTimers, startTimer, stopTimer } from '../actions'
-import { ElapsedTime } from '../components/ElapsedTime'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { fetchTimers, startTimer, stopTimer, createTimer } from '../actions';
+import { ElapsedTime } from '../components/ElapsedTime';
+import { CreateTimer } from '../components/CreateTimer';
+import { formDataAsObject } from '../util';
 
 class Timers extends Component {
   componentDidMount() {
@@ -15,27 +17,26 @@ class Timers extends Component {
     if (this.props.isFetching) {
       return (
         <p>{"fetching timers..."}</p>
-      )
+      );
     }
 
     if (this.props.fetchFailed) {
       return (
         <p>{"fetching timers failed :("}</p>
-      )
+      );
     }
 
     if (this.props.entities.get('timers').size === 0) {
       return (
         <p>{"you have no timers!"}</p>
-      )
+      );
     }
 
+    const wsConnection = this.props.wsConnection;
     const timerElements = this.props.entities.get('timers')
                                              .valueSeq()
                                              .map((timer) => {
-      const project = this.props.entities.get('projects').get(timer.get('id'))
-
-      const wsConnection = this.props.wsConnection
+      const project = this.props.entities.get('projects').get(timer.get('project-id'));
       const onTimerClick = () => {
         if (timer.get('started-time')) {
           this.props.dispatch(stopTimer(timer, wsConnection));
@@ -58,19 +59,28 @@ class Timers extends Component {
             </li>
           </ul>
         </li>
-      )
+      );
     });
+
+    const createOnClick = (formData) => {
+      const projectId = parseInt(formData['project-id'], 10);
+      this.props.dispatch(createTimer(projectId, wsConnection));
+    };
 
     return (
       <ul>
         {timerElements}
+        <li>
+          <CreateTimer onClick={(formData) => createOnClick(formData)}
+                       projects={this.props.entities.get('projects').valueSeq()}/>
+        </li>
       </ul>
-    )
+    );
   }
 }
 
 function mapStateToProps(state) {
-  const timersState = state.get('timers')
+  const timersState = state.get('timers');
   return {
     entities: state.get('entities'),
     isFetching: timersState.get('isFetching'),
@@ -78,7 +88,7 @@ function mapStateToProps(state) {
     fetchFailed: timersState.get('fetchFailed'),
     authToken: state.get('googleUser').getAuthResponse().id_token,
     wsConnection: state.get('wsConnection')
-  }
+  };
 }
 
 export default connect(mapStateToProps)(Timers)

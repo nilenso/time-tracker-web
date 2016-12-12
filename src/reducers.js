@@ -20,8 +20,9 @@ function entitiesReducer(state = Immutable.fromJS({
     case 'WS_RECEIVED_MESSAGE':
       switch (action.message.type) {
         case 'update':
+        case 'create':
           const copiedTimer = Immutable.Map(action.message).delete('type');
-          return state.setIn(['timers', action.message.id], copiedTimer);
+          return state.mergeIn(['timers', action.message.id], copiedTimer);
 
         default:
           return state;
