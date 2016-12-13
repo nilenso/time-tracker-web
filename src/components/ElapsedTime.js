@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
-import moment from 'moment'
-import 'moment-duration-format'
+import React, { Component } from 'react';
+import moment from 'moment';
+import 'moment-duration-format';
+import lodash from 'lodash';
 
 function computeElapsedSeconds(startedEpoch, duration) {
   if (startedEpoch === null) {
@@ -31,7 +32,7 @@ export class ElapsedTime extends Component {
   }
 
   componentDidMount() {
-    if (this.props.startedEpoch) {
+    if(this.props.startedEpoch) {
       this.intervalId = window.setInterval(() => this.tick(), 1000);
     }
   }
@@ -57,15 +58,20 @@ export class ElapsedTime extends Component {
     }
   }
 
+  toggleTimer() {
+    return lodash.debounce(this.props.onClick, 100);
+  }
+
   render() {
     const buttonContents = this.props.startedEpoch ? 'Stop' : 'Start'
+
     return (
       <div>
         <span>
           {moment.duration(this.state.elapsedSeconds, 'seconds')
-                 .format('hh:mm:ss')}
+                 .format('hh:mm')}
         </span>
-        <button onClick={() => this.props.onClick()}>
+        <button onClick={this.toggleTimer()}>
           {buttonContents}
         </button>
       </div>
