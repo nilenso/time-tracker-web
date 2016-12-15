@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './App';
 import { About } from './components/About';
-import Timers from './containers/Timers'
+import Admin from './containers/Admin';
+import Timers from './containers/Timers';
 import { rootReducer } from './reducers';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import { Provider } from 'react-redux';
@@ -22,6 +23,7 @@ ReactDOM.render(
         <IndexRoute component={Timers} />
         <Route path="about" component={About} />
         <Route path="timers" component={Timers} />
+        <Route path="admin" component={Admin} />
       </Route>
     </Router>
   </Provider>,

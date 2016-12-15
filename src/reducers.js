@@ -28,6 +28,9 @@ function entitiesReducer(state = Immutable.fromJS({
           return state;
       }
 
+    case 'PROJECT_CREATED':
+      return state.mergeIn(['projects', action.project.id], action.project);
+
     default:
       return state;
   }

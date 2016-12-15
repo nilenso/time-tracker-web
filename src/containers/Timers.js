@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { fetchTimers, startTimer, stopTimer, createTimer } from '../actions';
 import { ElapsedTime } from '../components/ElapsedTime';
 import { CreateTimer } from '../components/CreateTimer';
-import { formDataAsObject } from '../util';
 
 class Timers extends Component {
   componentDidMount() {
@@ -91,4 +90,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Timers)
+export default connect(mapStateToProps)(Timers);

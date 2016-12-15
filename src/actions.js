@@ -120,15 +120,15 @@ export function requestTimersFailed() {
   }
 }
 
-function getProjectFromTimer(timer, authToken) {
-  const url = 'http://localhost:8000/api/projects/' + timer['project-id'] + '/';
-  return Request
-          .get(url)
-          .set('Authorization', 'Bearer ' + authToken)
-          .then((response) => {
-            return response.body;
-          });
-}
+// function getProjectFromTimer(timer, authToken) {
+//   const url = 'http://localhost:8000/api/projects/' + timer['project-id'] + '/';
+//   return Request
+//           .get(url)
+//           .set('Authorization', 'Bearer ' + authToken)
+//           .then((response) => {
+//             return response.body;
+//           });
+// }
 
 function getAllProjects(authToken) {
   const url = 'http://localhost:8000/api/projects/';
@@ -182,5 +182,26 @@ export function userSignedIn(googleUser) {
   return {
     type: 'USER_SIGNED_IN',
     googleUser
+  };
+}
+
+function projectCreated(project) {
+  return {
+    type: 'PROJECT_CREATED',
+    project
+  }
+}
+
+export function createProject(projectName, authToken) {
+  return (dispatch) => {
+    const url = 'http://localhost:8000/api/projects/';
+    return Request
+            .post(url)
+            .send({name: projectName})
+            .set('Authorization', 'Bearer ' + authToken)
+            .then((response) => {
+              const newProject = response.body;
+              dispatch(projectCreated(newProject));
+            });
   };
 }
