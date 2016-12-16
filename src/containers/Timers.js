@@ -42,18 +42,6 @@ class Timers extends Component {
   }
 
   render() {
-    if (this.props.isFetching) {
-      return (
-        <p>{"fetching timers..."}</p>
-      );
-    }
-
-    if (this.props.fetchFailed) {
-      return (
-        <p>{"fetching timers failed :("}</p>
-      );
-    }
-
     const timerElements = this.props.entities
                             .get('timers')
                             .valueSeq()

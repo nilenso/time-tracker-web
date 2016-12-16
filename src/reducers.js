@@ -97,11 +97,40 @@ function wsConnectionReducer(state = Immutable.Map({
   }
 }
 
+function statusBarDataReducer(state = Immutable.Map({
+  text: null,
+  timeoutSeconds: null
+}), action) {
+  switch (action.type) {
+    case 'CLEAR_STATUS_BAR':
+      return state.merge({text: null, timeoutSeconds: null});
+
+    case 'REQUEST_TIMERS':
+      return state.merge({text: 'fetching timers...',
+                          timeoutSeconds: null});
+
+    case 'RECEIVE_TIMERS_PROJECTS':
+      return state.merge({text: null, timeoutSeconds: null});
+
+    case 'REQUEST_TIMERS_FAILED':
+      return state.merge({text: 'fetching timers failed :(',
+                          timeoutSeconds: 4});
+
+    case 'PROJECT_CREATED':
+      return state.merge({text: 'project successfully created.',
+                          timeoutSeconds: 3})
+
+    default:
+      return state;
+  }
+}
+
 export function rootReducer(state = Immutable.Map({}), action) {
     return state.merge({
       googleUser: googleUserReducer(state.get('googleUser'), action),
       timers: timersReducer(state.get('timers'), action),
       entities: entitiesReducer(state.get('entities'), action),
-      wsConnection: wsConnectionReducer(state.get('wsConnection'), action)
+      wsConnection: wsConnectionReducer(state.get('wsConnection'), action),
+      statusBarData: statusBarDataReducer(state.get('statusBarData'), action)
     });
 }

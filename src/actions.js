@@ -205,3 +205,24 @@ export function createProject(projectName, authToken) {
             });
   };
 }
+
+export function clearStatusBar() {
+  return {
+    type: 'CLEAR_STATUS_BAR'
+  };
+}
+
+export function setStatusBar(message) {
+  return {
+    type: 'SET_STATUS_BAR',
+    message
+  };
+}
+
+export function setStatusBarTimeout(message, timeoutSeconds) {
+  return {
+    type: 'SET_STATUS_BAR_TIMEOUT',
+    message,
+    timeoutSeconds
+  };
+}

@@ -1,5 +1,6 @@
 import React from 'react';
-import { SignIn } from './containers/SignIn';
+import {SignIn} from './containers/SignIn';
+import StatusBar from './containers/StatusBar';
 import { Link } from 'react-router';
 
 export function App(props) {
@@ -20,6 +21,9 @@ export function App(props) {
           {props.children}
         </section>
         <footer>
+          <section>
+            <StatusBar />
+          </section>
           <nav>
             <ul>
               <li>{'made with ❤'}</li>
