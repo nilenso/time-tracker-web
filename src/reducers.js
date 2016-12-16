@@ -1,8 +1,10 @@
 import Immutable from 'immutable';
+import * as ActionTypes from './actions';
+
 
 function googleUserReducer(state = null, action) {
   switch (action.type) {
-    case 'USER_SIGNED_IN':
+    case ActionTypes.USER_SIGNED_IN:
       return action.googleUser
     default:
       return state;
@@ -14,10 +16,10 @@ function entitiesReducer(state = Immutable.fromJS({
   projects: {}
 }), action) {
   switch (action.type) {
-    case 'RECEIVE_TIMERS_PROJECTS':
+    case ActionTypes.RECEIVE_TIMERS_PROJECTS:
       return state.mergeDeep(action.entities);
 
-    case 'WS_RECEIVED_MESSAGE':
+    case ActionTypes.WS_RECEIVED_MESSAGE:
       switch (action.message.type) {
         case 'update':
         case 'create':
@@ -28,7 +30,7 @@ function entitiesReducer(state = Immutable.fromJS({
           return state;
       }
 
-    case 'PROJECT_CREATED':
+    case ActionTypes.PROJECT_CREATED:
       return state.mergeIn(['projects', action.project.id], action.project);
 
     default:
@@ -42,25 +44,25 @@ function timersReducer(state = Immutable.Map({
   fetchFailed: false,
 }), action) {
   switch (action.type) {
-    case 'REQUEST_TIMERS_PROJECTS':
+    case ActionTypes.REQUEST_TIMERS_PROJECTS:
       return state.merge({
         isFetching: true,
         isStale: false
       });
 
-    case 'RECEIVE_TIMERS_PROJECTS':
+    case ActionTypes.RECEIVE_TIMERS_PROJECTS:
       return state.merge({
         isFetching: false,
         isStale: false,
         fetchFailed: false
       });
 
-    case 'MAKE_TIMERS_STALE':
+    case ActionTypes.MAKE_TIMERS_STALE:
       return state.merge({
         isStale: true
       });
 
-    case 'REQUEST_TIMERS_FAILED':
+    case ActionTypes.REQUEST_TIMERS_FAILED:
       return state.merge({
         isFetching: false,
         fetchFailed: true
@@ -76,18 +78,18 @@ function wsConnectionReducer(state = Immutable.Map({
   failed: false
 }), action) {
   switch (action.type) {
-    case 'WS_CONNECTION_FAILED':
+    case ActionTypes.WS_CONNECTION_FAILED:
       return state.merge({
         failed: true
       });
 
-    case 'WS_CONNECTION_READY':
+    case ActionTypes.WS_CONNECTION_READY:
       return state.merge({
         failed: false,
         connection: action.connection
       });
 
-    case 'WS_HANDSHAKE_FAILED':
+    case ActionTypes.WS_HANDSHAKE_FAILED:
       return state.merge({
         failed: true
       });
@@ -102,21 +104,21 @@ function statusBarDataReducer(state = Immutable.Map({
   timeoutSeconds: null
 }), action) {
   switch (action.type) {
-    case 'CLEAR_STATUS_BAR':
+    case ActionTypes.CLEAR_STATUS_BAR:
       return state.merge({text: null, timeoutSeconds: null});
 
-    case 'REQUEST_TIMERS_PROJECTS':
+    case ActionTypes.REQUEST_TIMERS_PROJECTS:
       return state.merge({text: 'fetching timers...',
                           timeoutSeconds: null});
 
-    case 'RECEIVE_TIMERS_PROJECTS':
+    case ActionTypes.RECEIVE_TIMERS_PROJECTS:
       return state.merge({text: null, timeoutSeconds: null});
 
-    case 'REQUEST_TIMERS_PROJECTS_FAILED':
+    case ActionTypes.REQUEST_TIMERS_PROJECTS_FAILED:
       return state.merge({text: 'fetching timers failed :(',
                           timeoutSeconds: 4});
 
-    case 'PROJECT_CREATED':
+    case ActionTypes.PROJECT_CREATED:
       return state.merge({text: 'project successfully created.',
                           timeoutSeconds: 3})
 
