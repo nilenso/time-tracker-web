@@ -1,99 +1,33 @@
-import Request from 'superagent';
-import Immutable from 'immutable';
-import moment from 'moment';
 
-function wsConnectionFailed() {
+// Websockets actions
+
+export function wsConnectionFailed() {
   return {
     type: 'WS_CONNECTION_FAILED'
   };
 }
 
-function wsReceivedMessage(message) {
+export function wsReceivedMessage(message) {
   return {
     type: 'WS_RECEIVED_MESSAGE',
     message
   };
 }
 
-function wsHandshakeFailed() {
+export function wsHandshakeFailed() {
   return {
     type: 'WS_HANDSHAKE_FAILED'
   };
 }
 
-function wsConnectionReady(connection) {
+export function wsConnectionReady(connection) {
   return {
     type: 'WS_CONNECTION_READY',
     connection
   };
 }
 
-export function makeWSConnection(authToken) {
-  return (dispatch) => {
-    let wsConnection
-      = new WebSocket('ws://localhost:8000/api/timers/ws-connect/');
-    wsConnection.onopen = (e) => {
-      wsConnection.send(JSON.stringify({
-        command: 'authenticate',
-        token: authToken
-      }));
-    };
-    wsConnection.onerror = (e) => {
-      dispatch(wsConnectionFailed());
-    };
-    wsConnection.onmessage = (e) => {
-      let message = JSON.parse(e.data);
-      if (message['auth-status'] === 'success') {
-        wsConnection.onmessage = (e) => {
-          dispatch(wsReceivedMessage(JSON.parse(e.data)));
-        };
-        dispatch(wsConnectionReady(wsConnection));
-      }
-      else {
-        dispatch(wsHandshakeFailed());
-      }
-    }
-  };
-}
-
-export function createTimer(projectId, wsConnection) {
-  return (dispatch) => {
-    if (!wsConnection.get('failed')) {
-      const connection = wsConnection.get('connection');
-      connection.send(JSON.stringify({
-        command: 'create-and-start-timer',
-        'project-id': projectId,
-        'started-time': moment().unix()
-      }));
-    }
-  }
-}
-
-export function startTimer(timer, wsConnection) {
-  return (dispatch) => {
-    if (!wsConnection.get('failed')) {
-      const connection = wsConnection.get('connection');
-      connection.send(JSON.stringify({
-        command: 'start-timer',
-        'timer-id': timer.get('id'),
-        'started-time': moment().unix()
-      }));
-    }
-  }
-}
-
-export function stopTimer(timer, wsConnection) {
-  return (dispatch) => {
-    if (!wsConnection.get('failed')) {
-      const connection = wsConnection.get('connection');
-      connection.send(JSON.stringify({
-        command: 'stop-timer',
-        'timer-id': timer.get('id'),
-        'stop-time': moment().unix()
-      }));
-    }
-  }
-}
+// Timer+project data fetch actions
 
 export function makeTimersStale() {
   return {
@@ -101,9 +35,9 @@ export function makeTimersStale() {
   }
 }
 
-export function requestTimers() {
+export function requestTimersAndProjects() {
   return {
-    type: 'REQUEST_TIMERS'
+    type: 'REQUEST_TIMERS_PROJECTS'
   }
 }
 
@@ -114,69 +48,13 @@ export function receiveTimersAndProjects(entities) {
   }
 }
 
-export function requestTimersFailed() {
+export function requestTimersAndProjectsFailed() {
   return {
-    type: 'REQUEST_TIMERS_FAILED'
+    type: 'REQUEST_TIMERS_PROJECTS_FAILED'
   }
 }
 
-// function getProjectFromTimer(timer, authToken) {
-//   const url = 'http://localhost:8000/api/projects/' + timer['project-id'] + '/';
-//   return Request
-//           .get(url)
-//           .set('Authorization', 'Bearer ' + authToken)
-//           .then((response) => {
-//             return response.body;
-//           });
-// }
-
-function getAllProjects(authToken) {
-  const url = 'http://localhost:8000/api/projects/';
-  return Request
-          .get(url)
-          .set('Authorization', 'Bearer ' + authToken)
-          .then((response) => {
-            return response.body;
-          });
-}
-
-function getAllTimers(authToken) {
-  const url = 'http://localhost:8000/api/timers/';
-  return Request
-          .get(url)
-          .set('Authorization', 'Bearer ' + authToken)
-          .then((response) => {
-            return response.body;
-          });
-}
-
-function normalizeArray(items) {
-  return Immutable.fromJS(items)
-                  .reduce((normalMap, item) => {
-                    return normalMap.set(item.get('id'), item);
-                  }, Immutable.Map({}));
-}
-
-export function fetchTimers(authToken) {
-  return (dispatch) => {
-    dispatch(requestTimers())
-
-    const timerPromises = getAllTimers(authToken);
-    const projectPromises = getAllProjects(authToken);
-    return Promise.all([timerPromises, projectPromises])
-            .then(([timers, projects]) => {
-              const normalizedTimers = normalizeArray(timers)
-              const normalizedProjects = normalizeArray(projects)
-              dispatch(receiveTimersAndProjects(Immutable.Map({
-                timers: normalizedTimers,
-                projects: normalizedProjects
-              })));
-            })
-            .catch((reason) => {
-              dispatch(requestTimersFailed());
-            });
-  }
-}
+// User auth actions
 
 export function userSignedIn(googleUser) {
   return {
@@ -185,26 +63,16 @@ export function userSignedIn(googleUser) {
   };
 }
 
-function projectCreated(project) {
+// Project actions
+
+export function projectCreated(project) {
   return {
     type: 'PROJECT_CREATED',
     project
   }
 }
 
-export function createProject(projectName, authToken) {
-  return (dispatch) => {
-    const url = 'http://localhost:8000/api/projects/';
-    return Request
-            .post(url)
-            .send({name: projectName})
-            .set('Authorization', 'Bearer ' + authToken)
-            .then((response) => {
-              const newProject = response.body;
-              dispatch(projectCreated(newProject));
-            });
-  };
-}
+// Status bar actions
 
 export function clearStatusBar() {
   return {

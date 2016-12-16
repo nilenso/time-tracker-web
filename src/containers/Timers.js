@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchTimers, startTimer, stopTimer, createTimer } from '../actions';
+import { fetchTimers, startTimer, stopTimer, createTimer } from '../thunks';
 import { ElapsedTime } from '../components/ElapsedTime';
 import { CreateTimer } from '../components/CreateTimer';
 

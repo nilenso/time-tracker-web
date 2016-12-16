@@ -42,7 +42,7 @@ function timersReducer(state = Immutable.Map({
   fetchFailed: false,
 }), action) {
   switch (action.type) {
-    case 'REQUEST_TIMERS':
+    case 'REQUEST_TIMERS_PROJECTS':
       return state.merge({
         isFetching: true,
         isStale: false
@@ -105,14 +105,14 @@ function statusBarDataReducer(state = Immutable.Map({
     case 'CLEAR_STATUS_BAR':
       return state.merge({text: null, timeoutSeconds: null});
 
-    case 'REQUEST_TIMERS':
+    case 'REQUEST_TIMERS_PROJECTS':
       return state.merge({text: 'fetching timers...',
                           timeoutSeconds: null});
 
     case 'RECEIVE_TIMERS_PROJECTS':
       return state.merge({text: null, timeoutSeconds: null});
 
-    case 'REQUEST_TIMERS_FAILED':
+    case 'REQUEST_TIMERS_PROJECTS_FAILED':
       return state.merge({text: 'fetching timers failed :(',
                           timeoutSeconds: 4});
 

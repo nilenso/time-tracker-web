@@ -1,6 +1,7 @@
 import { SignInDisplay } from '../components/SignInDisplay';
 import { connect } from 'react-redux';
-import { userSignedIn, makeWSConnection } from '../actions';
+import { userSignedIn } from '../actions';
+import { makeWSConnection } from '../thunks';
 
 function mapStateToProps(state) {
   if (state.get('googleUser')) {

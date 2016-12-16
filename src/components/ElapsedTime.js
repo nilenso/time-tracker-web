@@ -5,13 +5,13 @@ import lodash from 'lodash';
 
 function computeElapsedSeconds(startedEpoch, duration) {
   if (startedEpoch === null) {
-    return duration
+    return duration;
   }
 
-  const now = moment()
-  const startedTime = moment.unix(startedEpoch)
-  const elapsedSeconds = now.diff(startedTime, 'seconds') + duration
-  return elapsedSeconds
+  const now = moment();
+  const startedTime = moment.unix(startedEpoch);
+  const elapsedSeconds = now.diff(startedTime, 'seconds') + duration;
+  return elapsedSeconds;
 }
 
 export class ElapsedTime extends Component {
@@ -21,7 +21,7 @@ export class ElapsedTime extends Component {
     this.state = {
       elapsedSeconds: computeElapsedSeconds(props.startedEpoch,
                                             props.duration)
-    }
+    };
   }
 
   tick() {
@@ -35,17 +35,16 @@ export class ElapsedTime extends Component {
     if(this.props.startedEpoch) {
       this.intervalId = window.setInterval(() => this.tick(), 1000);
     }
+    else {
+      this.intervalId = null;
+    }
   }
 
   componentWillReceiveProps(newProps) {
+    window.clearInterval(this.intervalId);
     if (newProps.startedEpoch) {
       // Timer was just started
       this.intervalId = window.setInterval(() => this.tick(), 1000);
-    }
-    else if (this.props.startedEpoch) {
-      // Timer was just stopped
-      window.clearInterval(this.intervalId)
-      this.intervalId = null;
     }
     else {
       this.intervalId = null;
@@ -53,9 +52,8 @@ export class ElapsedTime extends Component {
   }
 
   componentWillUnmount() {
-    if (this.intervalId) {
-      window.clearInterval(this.intervalId)
-    }
+    window.clearInterval(this.intervalId);
+    this.intervalId = null;
   }
 
   toggleTimer() {
@@ -63,7 +61,7 @@ export class ElapsedTime extends Component {
   }
 
   render() {
-    const buttonContents = this.props.startedEpoch ? 'Stop' : 'Start'
+    const buttonContents = this.props.startedEpoch ? 'Stop' : 'Start';
 
     return (
       <div>

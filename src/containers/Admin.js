@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { AdminDisplay } from '../components/AdminDisplay';
 import { connect } from 'react-redux';
-import { createProject } from '../actions';
+import { createProject } from '../thunks';
 
 function mapStateToProps(state) {
   return {
