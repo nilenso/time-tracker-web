@@ -6,10 +6,39 @@ import { CreateTimer } from '../components/CreateTimer';
 
 class Timers extends Component {
   componentDidMount() {
-    const { dispatch, isStale, authToken } = this.props
+    const { dispatch, isStale, authToken } = this.props;
     if (isStale) {
-      dispatch(fetchTimers(authToken))
+      dispatch(fetchTimers(authToken));
     }
+  }
+
+  onTimerClick(timer) {
+    const wsConnection = this.props.wsConnection;
+    if (timer.get('started-time')) {
+      this.props.dispatch(stopTimer(timer, wsConnection));
+    }
+    else {
+      this.props.dispatch(startTimer(timer, wsConnection));
+    }
+  }
+
+  createTimerElement(timer) {
+    const project = this.props.entities.get('projects')
+                                       .get(timer.get('project-id'));
+    return (
+      <li key={timer.get('id')}>
+        <ul>
+          <li>
+            Project: {project.get('name')}
+          </li>
+          <li>
+            <ElapsedTime startedEpoch={timer.get('started-time')}
+                         duration={timer.get('duration')}
+                         onClick={() => this.onTimerClick(timer)}/>
+          </li>
+        </ul>
+      </li>
+    );
   }
 
   render() {
@@ -25,53 +54,21 @@ class Timers extends Component {
       );
     }
 
-    if (this.props.entities.get('timers').size === 0) {
-      return (
-        <p>{"you have no timers!"}</p>
-      );
-    }
-
-    const wsConnection = this.props.wsConnection;
-    const timerElements = this.props.entities.get('timers')
-                                             .valueSeq()
-                                             .map((timer) => {
-      const project = this.props.entities.get('projects').get(timer.get('project-id'));
-      const onTimerClick = () => {
-        if (timer.get('started-time')) {
-          this.props.dispatch(stopTimer(timer, wsConnection));
-        }
-        else {
-          this.props.dispatch(startTimer(timer, wsConnection));
-        }
-      }
-
-      return (
-        <li key={timer.get('id')}>
-          <ul>
-            <li>
-              Project: {project.get('name')}
-            </li>
-            <li>
-              <ElapsedTime startedEpoch={timer.get('started-time')}
-                           duration={timer.get('duration')}
-                           onClick={() => onTimerClick()}/>
-            </li>
-          </ul>
-        </li>
-      );
-    });
-
+    const timerElements = this.props.entities
+                            .get('timers')
+                            .valueSeq()
+                            .map((timer) => this.createTimerElement(timer));
     const createOnClick = (formData) => {
       const projectId = parseInt(formData['project-id'], 10);
-      this.props.dispatch(createTimer(projectId, wsConnection));
+      this.props.dispatch(createTimer(projectId, this.props.wsConnection));
     };
-
+    const projectsList = this.props.entities.get('projects').valueSeq();
     return (
       <ul>
         {timerElements}
         <li>
           <CreateTimer onClick={(formData) => createOnClick(formData)}
-                       projects={this.props.entities.get('projects').valueSeq()}/>
+                       projects={projectsList}/>
         </li>
       </ul>
     );
