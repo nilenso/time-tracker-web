@@ -15,8 +15,9 @@ import {
 
 export function makeWSConnection(authToken) {
   return (dispatch) => {
+    const url = 'ws://' + window.location.host + '/api/timers/ws-connect/';
     let wsConnection
-      = new WebSocket('ws://localhost:8000/api/timers/ws-connect/');
+      = new WebSocket(url);
     wsConnection.onopen = (e) => {
       wsConnection.send(JSON.stringify({
         command: 'authenticate',
@@ -81,7 +82,7 @@ export function stopTimer(timer, wsConnection) {
 }
 
 function getAllProjects(authToken) {
-  const url = 'http://localhost:8000/api/projects/';
+  const url = 'api/projects/';
   return Request
           .get(url)
           .set('Authorization', 'Bearer ' + authToken)
@@ -91,7 +92,7 @@ function getAllProjects(authToken) {
 }
 
 function getAllTimers(authToken) {
-  const url = 'http://localhost:8000/api/timers/';
+  const url = '/api/timers/';
   return Request
           .get(url)
           .set('Authorization', 'Bearer ' + authToken)
@@ -131,7 +132,7 @@ export function fetchTimers(authToken) {
 
 export function createProject(projectName, authToken) {
   return (dispatch) => {
-    const url = 'http://localhost:8000/api/projects/';
+    const url = '/api/projects/';
     return Request
             .post(url)
             .send({name: projectName})
