@@ -5,7 +5,7 @@ import { About } from './components/About';
 import Admin from './containers/Admin';
 import Timers from './containers/Timers';
 import { rootReducer } from './reducers';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { Router, Route, IndexRoute, browserHistory, Redirect } from 'react-router';
 import { Provider } from 'react-redux';
 import thunkMiddleware from 'redux-thunk';
 import { createStore, applyMiddleware } from 'redux';
@@ -25,6 +25,7 @@ ReactDOM.render(
         <Route path="timers" component={Timers} />
         <Route path="admin" component={Admin} />
       </Route>
+      <Redirect from="*" to="/"/>
     </Router>
   </Provider>,
   document.getElementById('root')
