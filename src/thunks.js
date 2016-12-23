@@ -14,6 +14,12 @@ import {
   receiveLocalUserData
 } from './actions';
 
+function sendPing(wsConnection) {
+  wsConnection.send(JSON.stringify({
+    command: 'ping'
+  }));
+}
+
 export function makeWSConnection(authToken) {
   return (dispatch) => {
     const url = 'ws://' + window.location.host + '/api/timers/ws-connect/';
@@ -31,9 +37,16 @@ export function makeWSConnection(authToken) {
     wsConnection.onmessage = (e) => {
       let message = JSON.parse(e.data);
       if (message['auth-status'] === 'success') {
+        const intervalId = window.setInterval(() => sendPing(wsConnection),
+                                              10000);
         wsConnection.onmessage = (e) => {
           dispatch(wsReceivedMessage(JSON.parse(e.data)));
         };
+        
+        wsConnection.onclose = (e) => {
+          window.clearInterval(intervalId);
+        };
+
         dispatch(wsConnectionReady(wsConnection));
       }
       else {
