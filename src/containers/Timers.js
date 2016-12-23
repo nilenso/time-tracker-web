@@ -65,12 +65,15 @@ class Timers extends Component {
 
 function mapStateToProps(state) {
   const timersState = state.get('timers');
+  const googleUser = state.getIn(['userData', 'googleUser']);
+  const isUserFetching = (googleUser === null);
+  const authToken = googleUser ? googleUser.getAuthResponse().id_token : null;
   return {
     entities: state.get('entities'),
-    isFetching: timersState.get('isFetching'),
+    isFetching: (timersState.get('isFetching') || isUserFetching),
     isStale: timersState.get('isStale'),
     fetchFailed: timersState.get('fetchFailed'),
-    authToken: state.get('googleUser').getAuthResponse().id_token,
+    authToken,
     wsConnection: state.get('wsConnection')
   };
 }

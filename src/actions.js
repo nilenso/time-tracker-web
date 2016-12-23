@@ -62,13 +62,21 @@ export function requestTimersAndProjectsFailed() {
   }
 }
 
-// User auth actions
+// User actions
 
 export const USER_SIGNED_IN = 'USER_SIGNED_IN';
 export function userSignedIn(googleUser) {
   return {
     type: USER_SIGNED_IN,
     googleUser
+  };
+}
+
+export const RECEIVE_LOCAL_USER_DATA = 'RECEIVE_LOCAL_USER_DATA';
+export function receiveLocalUserData(userData) {
+  return {
+    type: RECEIVE_LOCAL_USER_DATA,
+    userData
   };
 }
 
@@ -79,7 +87,7 @@ export function projectCreated(project) {
   return {
     type: PROJECT_CREATED,
     project
-  }
+  };
 }
 
 // Status bar actions

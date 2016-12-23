@@ -1,16 +1,6 @@
 import Immutable from 'immutable';
 import * as ActionTypes from './actions';
 
-
-function googleUserReducer(state = null, action) {
-  switch (action.type) {
-    case ActionTypes.USER_SIGNED_IN:
-      return action.googleUser
-    default:
-      return state;
-  }
-}
-
 function entitiesReducer(state = Immutable.fromJS({
   timers: {},
   projects: {}
@@ -127,9 +117,25 @@ function statusBarDataReducer(state = Immutable.Map({
   }
 }
 
+function userDataReducer(state = Immutable.Map({
+  googleUser: null,
+  localUser: null
+}), action) {
+  switch (action.type) {
+    case ActionTypes.RECEIVE_LOCAL_USER_DATA:
+      return state.merge({localUser: action.userData});
+
+    case ActionTypes.USER_SIGNED_IN:
+      return state.merge({googleUser: action.googleUser});
+
+    default:
+      return state;
+  }
+}
+
 export function rootReducer(state = Immutable.Map({}), action) {
     return state.merge({
-      googleUser: googleUserReducer(state.get('googleUser'), action),
+      userData: userDataReducer(state.get('userData'), action),
       timers: timersReducer(state.get('timers'), action),
       entities: entitiesReducer(state.get('entities'), action),
       wsConnection: wsConnectionReducer(state.get('wsConnection'), action),

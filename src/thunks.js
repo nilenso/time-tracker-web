@@ -10,7 +10,8 @@ import {
   requestTimersAndProjects,
   requestTimersAndProjectsFailed,
   receiveTimersAndProjects,
-  projectCreated
+  projectCreated,
+  receiveLocalUserData
 } from './actions';
 
 export function makeWSConnection(authToken) {
@@ -82,7 +83,7 @@ export function stopTimer(timer, wsConnection) {
 }
 
 function getAllProjects(authToken) {
-  const url = 'api/projects/';
+  const url = '/api/projects/';
   return Request
           .get(url)
           .set('Authorization', 'Bearer ' + authToken)
@@ -129,7 +130,6 @@ export function fetchTimers(authToken) {
   }
 }
 
-
 export function createProject(projectName, authToken) {
   return (dispatch) => {
     const url = '/api/projects/';
@@ -142,4 +142,17 @@ export function createProject(projectName, authToken) {
               dispatch(projectCreated(newProject));
             });
   };
+}
+
+export function fetchLocalUserData(authToken) {
+  return (dispatch) => {
+    const url = '/api/users/me/';
+    return Request
+            .get(url)
+            .set('Authorization', 'Bearer ' + authToken)
+            .then((response) => {
+              const userData = response.body;
+              dispatch(receiveLocalUserData(userData));
+            });
+  }
 }

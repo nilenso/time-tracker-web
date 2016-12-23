@@ -4,8 +4,11 @@ import { connect } from 'react-redux';
 import { createProject } from '../thunks';
 
 function mapStateToProps(state) {
+  const userRole = state.getIn(['userData', 'localUser', 'role']);
+  const isAdmin = userRole === 'admin' ? true : false;
   return {
-    authToken: state.get('googleUser').getAuthResponse().id_token
+    authToken: state.getIn(['userData', 'googleUser']).getAuthResponse().id_token,
+    isAdmin
   };
 }
 
@@ -15,7 +18,12 @@ class Admin extends Component {
   }
 
   render() {
-    return <AdminDisplay onFormSubmit={(projectName) => {this.onFormSubmit(projectName)}}/>
+    if (this.props.isAdmin) {
+      return <AdminDisplay onFormSubmit={(projectName) => {this.onFormSubmit(projectName)}}/>
+    }
+    else {
+      return <p>You are not authorized to view this page.</p>
+    }
   }
 }
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { App } from './App';
+import App from './App';
 import { About } from './components/About';
 import Admin from './containers/Admin';
 import Timers from './containers/Timers';

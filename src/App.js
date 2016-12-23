@@ -3,7 +3,26 @@ import {SignIn} from './containers/SignIn';
 import StatusBar from './containers/StatusBar';
 import { Link } from 'react-router';
 
-export function App(props) {
+import { connect } from 'react-redux';
+
+function mapStateToProps(state) {
+  const userRole = state.getIn(['userData', 'localUser', 'role']);
+  const isAdmin = userRole === 'admin' ? true : false;
+  return {
+    isAdmin
+  };
+}
+
+function App(props) {
+  let adminLink;
+
+  if (props.isAdmin) {
+    adminLink = <li><Link to="/admin">admin</Link></li>;
+  }
+  else {
+    adminLink = null;
+  }
+
   return (
     <div>
       <SignIn>
@@ -13,7 +32,7 @@ export function App(props) {
               <li>time tracker</li>
               <li><Link to="/about">about</Link></li>
               <li><Link to="/timers">timers</Link></li>
-              <li><Link to="/admin">admin</Link></li>
+              {adminLink}
             </ul>
           </nav>
         </header>
@@ -34,3 +53,5 @@ export function App(props) {
     </div>
   );
 }
+
+export default connect(mapStateToProps)(App);
