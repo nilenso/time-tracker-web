@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export class SignInDisplay extends Component {
+export default class SignInDisplay extends Component {
   componentDidMount() {
     if (this.props.signedIn === false) {
       /*global gapi*/

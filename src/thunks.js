@@ -7,11 +7,12 @@ import {
   wsConnectionReady,
   wsReceivedMessage,
   wsHandshakeFailed,
-  requestTimersAndProjects,
-  requestTimersAndProjectsFailed,
-  receiveTimersAndProjects,
+  requestTimers,
+  requestTimersFailed,
   projectCreated,
-  receiveLocalUserData
+  receiveLocalUserData,
+  receiveProjects,
+  receiveTimers
 } from './actions';
 
 function sendPing(wsConnection) {
@@ -42,7 +43,7 @@ export function makeWSConnection(authToken) {
         wsConnection.onmessage = (e) => {
           dispatch(wsReceivedMessage(JSON.parse(e.data)));
         };
-        
+
         wsConnection.onclose = (e) => {
           window.clearInterval(intervalId);
         };
@@ -56,14 +57,15 @@ export function makeWSConnection(authToken) {
   };
 }
 
-export function createTimer(projectId, wsConnection) {
+export function createTimer(projectId, createTime, wsConnection) {
   return (dispatch) => {
     if (!wsConnection.get('failed')) {
       const connection = wsConnection.get('connection');
       connection.send(JSON.stringify({
         command: 'create-and-start-timer',
         'project-id': projectId,
-        'started-time': moment().unix()
+        'started-time': moment().unix(),
+        'created-time': createTime
       }));
     }
   }
@@ -105,16 +107,6 @@ function getAllProjects(authToken) {
           });
 }
 
-function getAllTimers(authToken) {
-  const url = '/api/timers/';
-  return Request
-          .get(url)
-          .set('Authorization', 'Bearer ' + authToken)
-          .then((response) => {
-            return response.body;
-          });
-}
-
 function normalizeArray(items) {
   return Immutable.fromJS(items)
                   .reduce((normalMap, item) => {
@@ -122,23 +114,31 @@ function normalizeArray(items) {
                   }, Immutable.Map({}));
 }
 
-export function fetchTimers(authToken) {
+export function fetchTimersOnDate(currentMoment, authToken) {
   return (dispatch) => {
-    dispatch(requestTimersAndProjects())
-
-    const timerPromises = getAllTimers(authToken);
-    const projectPromises = getAllProjects(authToken);
-    return Promise.all([timerPromises, projectPromises])
-            .then(([timers, projects]) => {
-              const normalizedTimers = normalizeArray(timers)
-              const normalizedProjects = normalizeArray(projects)
-              dispatch(receiveTimersAndProjects(Immutable.Map({
-                timers: normalizedTimers,
-                projects: normalizedProjects
-              })));
+    dispatch(requestTimers());
+    const url = '/api/timers/';
+    return Request
+            .get(url)
+            .set('Authorization', 'Bearer ' + authToken)
+            .query({date: currentMoment.unix()})
+            .query({'utc-offset': currentMoment.utcOffset()})
+            .then((response) => {
+              const timers = normalizeArray(response.body);
+              dispatch(receiveTimers(timers));
             })
-            .catch((reason) => {
-              dispatch(requestTimersAndProjectsFailed());
+            .catch(() => {
+              dispatch(requestTimersFailed());
+            });
+  }
+}
+
+export function fetchProjects(authToken) {
+  return (dispatch) => {
+    return getAllProjects(authToken)
+            .then((projects) => {
+              const normalizedProjects = normalizeArray(projects);
+              dispatch(receiveProjects(normalizedProjects));
             });
   }
 }

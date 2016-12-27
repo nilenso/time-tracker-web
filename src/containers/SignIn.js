@@ -1,4 +1,4 @@
-import { SignInDisplay } from '../components/SignInDisplay';
+import SignInDisplay from '../components/SignInDisplay';
 import { connect } from 'react-redux';
 import { userSignedIn } from '../actions';
 import { makeWSConnection, fetchLocalUserData } from '../thunks';

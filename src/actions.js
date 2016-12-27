@@ -31,7 +31,7 @@ export function wsConnectionReady(connection) {
   };
 }
 
-// Timer+project data fetch actions
+// Timer actions
 
 export const MAKE_TIMERS_STALE = 'MAKE_TIMERS_STALE';
 export function makeTimersStale() {
@@ -40,26 +40,26 @@ export function makeTimersStale() {
   }
 }
 
-export const REQUEST_TIMERS_PROJECTS = 'REQUEST_TIMERS_PROJECTS';
-export function requestTimersAndProjects() {
+export const REQUEST_TIMERS = 'REQUEST_TIMERS';
+export function requestTimers() {
   return {
-    type: REQUEST_TIMERS_PROJECTS
+    type: REQUEST_TIMERS
+  };
+}
+
+export const RECEIVE_TIMERS = 'RECEIVE_TIMERS';
+export function receiveTimers(timers) {
+  return {
+    type: RECEIVE_TIMERS,
+    timers
   }
 }
 
-export const RECEIVE_TIMERS_PROJECTS = 'RECEIVE_TIMERS_PROJECTS';
-export function receiveTimersAndProjects(entities) {
+export const REQUEST_TIMERS_FAILED = 'REQUEST_TIMERS_FAILED';
+export function requestTimersFailed() {
   return {
-    type: RECEIVE_TIMERS_PROJECTS,
-    entities
-  }
-}
-
-export const REQUEST_TIMERS_PROJECTS_FAILED = 'REQUEST_TIMERS_PROJECTS_FAILED';
-export function requestTimersAndProjectsFailed() {
-  return {
-    type: REQUEST_TIMERS_PROJECTS_FAILED
-  }
+    type: REQUEST_TIMERS_FAILED
+  };
 }
 
 // User actions
@@ -87,6 +87,14 @@ export function projectCreated(project) {
   return {
     type: PROJECT_CREATED,
     project
+  };
+}
+
+export const RECEIVE_PROJECTS = 'RECEIVE_PROJECTS';
+export function receiveProjects(projects) {
+  return {
+    type: RECEIVE_PROJECTS,
+    projects
   };
 }
 

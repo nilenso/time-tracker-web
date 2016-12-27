@@ -14,7 +14,7 @@ function computeElapsedSeconds(startedEpoch, duration) {
   return elapsedSeconds;
 }
 
-export class ElapsedTime extends Component {
+export default class ElapsedTime extends Component {
   constructor(props) {
     super(props);
 

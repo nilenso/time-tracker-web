@@ -1,19 +1,34 @@
 import React, { Component } from 'react';
 import { formDataAsObject } from '../util';
 
-export class CreateTimer extends Component {
+export default class CreateTimer extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      showForm: false
+      showForm: false,
+      selectedValue: ''
     };
+
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({selectedValue: event.target.value});
+  }
+
+  handleSubmit(event) {
+    const projectId = parseInt(this.state.selectedValue, 10);
+    this.props.onClick(projectId);
+    this.setState({showForm: false});
+    event.preventDefault();
   }
 
   onFormSubmit() {
     const formData = formDataAsObject('create-timer-form');
     this.props.onClick(formData);
-    this.setState({showForm: false});
+
   }
 
   render() {
@@ -27,13 +42,12 @@ export class CreateTimer extends Component {
       });
 
       return (
-        <form id="create-timer-form">
-          <select name="project-id">
+        <form onSubmit={this.handleSubmit}>
+          <select value={this.state.selectedValue}
+                  onChange={this.handleChange}>
             {projectOptions}
           </select>
-          <button type="button" onClick={() => this.onFormSubmit()}>
-            Create
-          </button>
+          <input type="submit" value="Create" />
           <button type="button" onClick={() => this.setState({showForm: false})}>
             Cancel
           </button>

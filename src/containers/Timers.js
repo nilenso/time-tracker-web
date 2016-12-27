@@ -1,14 +1,33 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchTimers, startTimer, stopTimer, createTimer } from '../thunks';
-import { ElapsedTime } from '../components/ElapsedTime';
-import { CreateTimer } from '../components/CreateTimer';
+import moment from 'moment';
+import { fetchTimersOnDate,
+         fetchProjects,
+         startTimer,
+         stopTimer,
+         createTimer } from '../thunks';
+import TimersDisplay from '../components/TimersDisplay';
+import DatePicker from '../components/DatePicker';
 
 class Timers extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      displayDate: moment()
+    };
+  }
+
   componentDidMount() {
-    const { dispatch, isStale, authToken } = this.props;
-    if (isStale) {
-      dispatch(fetchTimers(authToken));
+    const { dispatch, authToken } = this.props;
+    dispatch(fetchTimersOnDate(this.state.displayDate, authToken));
+    dispatch(fetchProjects(authToken));
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    const { dispatch, authToken } = this.props;
+    if (!nextState.displayDate.isSame(this.state.displayDate)) {
+      dispatch(fetchTimersOnDate(nextState.displayDate, authToken));
     }
   }
 
@@ -22,43 +41,38 @@ class Timers extends Component {
     }
   }
 
-  createTimerElement(timer) {
-    const project = this.props.entities.get('projects')
-                                       .get(timer.get('project-id'));
-    return (
-      <li key={timer.get('id')}>
-        <ul>
-          <li>
-            Project: {project.get('name')}
-          </li>
-          <li>
-            <ElapsedTime startedEpoch={timer.get('started-time')}
-                         duration={timer.get('duration')}
-                         onClick={() => this.onTimerClick(timer)}/>
-          </li>
-        </ul>
-      </li>
-    );
+  onCreateClick(projectId) {
+    const displayDate = this.state.displayDate;
+    const createdTime = moment()
+                          .date(displayDate.date())
+                          .month(displayDate.month())
+                          .year(displayDate.year())
+                          .unix();
+    this.props.dispatch(createTimer(projectId,
+                                    createdTime,
+                                    this.props.wsConnection));
   }
 
   render() {
-    const timerElements = this.props.entities
-                            .get('timers')
-                            .valueSeq()
-                            .map((timer) => this.createTimerElement(timer));
-    const createOnClick = (formData) => {
-      const projectId = parseInt(formData['project-id'], 10);
-      this.props.dispatch(createTimer(projectId, this.props.wsConnection));
-    };
-    const projectsList = this.props.entities.get('projects').valueSeq();
+    const wasCreatedToday = (timer) => {
+      const timeCreatedMoment = moment.unix(timer.get('time-created'));
+      return this.state.displayDate.isSame(timeCreatedMoment, 'day');
+    }
+    const todaysTimers = this.props.entities
+                                   .get('timers')
+                                   .filter(wasCreatedToday);
+
     return (
-      <ul>
-        {timerElements}
-        <li>
-          <CreateTimer onClick={(formData) => createOnClick(formData)}
-                       projects={projectsList}/>
-        </li>
-      </ul>
+      <div>
+        <DatePicker defaultMoment={this.state.displayDate}
+                    onChangeDate={newMoment => this.setState({displayDate: newMoment})}
+                    />
+        <TimersDisplay timers={todaysTimers}
+                       projects={this.props.entities.get('projects')}
+                       onTimerClick={(timer) => this.onTimerClick(timer)}
+                       onCreateClick={(formData) => this.onCreateClick(formData)}
+                       />
+      </div>
     );
   }
 }
@@ -70,9 +84,8 @@ function mapStateToProps(state) {
   const authToken = googleUser ? googleUser.getAuthResponse().id_token : null;
   return {
     entities: state.get('entities'),
+    // TODO: Use this property to disable buttons.
     isFetching: (timersState.get('isFetching') || isUserFetching),
-    isStale: timersState.get('isStale'),
-    fetchFailed: timersState.get('fetchFailed'),
     authToken,
     wsConnection: state.get('wsConnection')
   };

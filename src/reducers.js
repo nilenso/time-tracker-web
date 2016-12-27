@@ -23,6 +23,12 @@ function entitiesReducer(state = Immutable.fromJS({
     case ActionTypes.PROJECT_CREATED:
       return state.mergeIn(['projects', action.project.id], action.project);
 
+    case ActionTypes.RECEIVE_PROJECTS:
+      return state.mergeIn(['projects'], action.projects);
+
+    case ActionTypes.RECEIVE_TIMERS:
+      return state.mergeIn(['timers'], action.timers);
+
     default:
       return state;
   }
@@ -34,13 +40,13 @@ function timersReducer(state = Immutable.Map({
   fetchFailed: false,
 }), action) {
   switch (action.type) {
-    case ActionTypes.REQUEST_TIMERS_PROJECTS:
+    case ActionTypes.REQUEST_TIMERS:
       return state.merge({
         isFetching: true,
         isStale: false
       });
 
-    case ActionTypes.RECEIVE_TIMERS_PROJECTS:
+    case ActionTypes.RECEIVE_TIMERS:
       return state.merge({
         isFetching: false,
         isStale: false,
@@ -97,14 +103,14 @@ function statusBarDataReducer(state = Immutable.Map({
     case ActionTypes.CLEAR_STATUS_BAR:
       return state.merge({text: null, timeoutSeconds: null});
 
-    case ActionTypes.REQUEST_TIMERS_PROJECTS:
+    case ActionTypes.REQUEST_TIMERS:
       return state.merge({text: 'fetching timers...',
                           timeoutSeconds: null});
 
-    case ActionTypes.RECEIVE_TIMERS_PROJECTS:
+    case ActionTypes.RECEIVE_TIMERS:
       return state.merge({text: null, timeoutSeconds: null});
 
-    case ActionTypes.REQUEST_TIMERS_PROJECTS_FAILED:
+    case ActionTypes.REQUEST_TIMERS_FAILED:
       return state.merge({text: 'fetching timers failed :(',
                           timeoutSeconds: 4});
 

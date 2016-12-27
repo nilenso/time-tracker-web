@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { StatusBarDisplay } from '../components/StatusBarDisplay';
+import StatusBarDisplay from '../components/StatusBarDisplay';
 import { clearStatusBar } from '../actions';
 
 class StatusBar extends Component {
