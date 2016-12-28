@@ -70,7 +70,7 @@ class Timers extends Component {
         <TimersDisplay timers={todaysTimers}
                        projects={this.props.entities.get('projects')}
                        onTimerClick={(timer) => this.onTimerClick(timer)}
-                       onCreateClick={(formData) => this.onCreateClick(formData)}
+                       onCreateClick={(projectId) => this.onCreateClick(projectId)}
                        />
       </div>
     );
