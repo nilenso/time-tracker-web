@@ -1,17 +1,22 @@
 import React, { Component } from 'react';
-import { formDataAsObject } from '../util';
 
 export default class CreateTimer extends Component {
   constructor(props) {
     super(props);
 
+    const firstProject = props.projects.first();
     this.state = {
       showForm: false,
-      selectedValue: ''
+      selectedValue: firstProject ? firstProject.get('id') : ''
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
+  }
+
+  componentWillReceiveProps(newProps) {
+    const firstProject = newProps.projects.first();
+    this.setState({selectedValue: firstProject ? firstProject.get('id') : ''});
   }
 
   handleChange(event) {
@@ -23,12 +28,6 @@ export default class CreateTimer extends Component {
     this.props.onClick(projectId);
     this.setState({showForm: false});
     event.preventDefault();
-  }
-
-  onFormSubmit() {
-    const formData = formDataAsObject('create-timer-form');
-    this.props.onClick(formData);
-
   }
 
   render() {
