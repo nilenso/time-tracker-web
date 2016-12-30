@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Timer from '../components/Timer';
-import CreateTimer from '../components/CreateTimer';
+import CreateTimerForm from '../components/CreateTimerForm';
 
 export default class TimersList extends Component {
   createTimerElement(timer) {
@@ -37,7 +37,7 @@ export default class TimersList extends Component {
       <ul>
         {timerElements}
         <li>
-          <CreateTimer onClick={(projectId) => this.props.onCreateClick(projectId)}
+          <CreateTimerForm onClick={(projectId) => this.props.onCreateClick(projectId)}
                        projects={projectsList}/>
         </li>
       </ul>

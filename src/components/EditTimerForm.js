@@ -43,14 +43,14 @@ export default class EditTimerForm extends Component {
   render() {
     return (
       <form onSubmit={this.handleSubmit}>
-        <label for="hours">Hours:</label>
+        <label htmlFor="hours">Hours:</label>
         <input type="text"
                value={this.state.ui.hours}
                name="hours"
                id="hours"
                onChange={this.handleTimerChange}
           />
-        <label for="minutes">Minutes:</label>
+        <label htmlFor="minutes">Minutes:</label>
         <input type="text"
                value={this.state.ui.minutes}
                name="minutes"
