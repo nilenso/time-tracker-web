@@ -97,6 +97,20 @@ export function stopTimer(timer, wsConnection) {
   }
 }
 
+export function updateTimerDuration(timer, duration, wsConnection) {
+  return (dispatch) => {
+    if (!wsConnection.get('failed')) {
+      const connection = wsConnection.get('connection');
+      connection.send(JSON.stringify({
+        command: 'change-timer-duration',
+        'timer-id': timer.get('id'),
+        'current-time': moment().unix(),
+        duration
+      }));
+    }
+  }
+}
+
 function getAllProjects(authToken) {
   const url = '/api/projects/';
   return Request

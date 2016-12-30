@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import ElapsedTime from '../components/ElapsedTime';
+import Timer from '../components/Timer';
 import CreateTimer from '../components/CreateTimer';
 
-export default class TimersDisplay extends Component {
+export default class TimersList extends Component {
   createTimerElement(timer) {
     const project = this.props.projects.get(timer.get('project-id'));
     if (!project) {
@@ -16,9 +16,11 @@ export default class TimersDisplay extends Component {
             Project: {project.get('name')}
           </li>
           <li>
-            <ElapsedTime startedEpoch={timer.get('started-time')}
-                         duration={timer.get('duration')}
-                         onClick={() => this.props.onTimerClick(timer)}/>
+            <Timer startedEpoch={timer.get('started-time')}
+                        duration={timer.get('duration')}
+                        onTimerToggle={() => this.props.onTimerToggle(timer)}
+                        onTimerEdit={(duration) => this.props.onTimerEdit(timer, duration)}
+              />
           </li>
         </ul>
       </li>
@@ -35,7 +37,7 @@ export default class TimersDisplay extends Component {
       <ul>
         {timerElements}
         <li>
-          <CreateTimer onClick={(formData) => this.props.onCreateClick(formData)}
+          <CreateTimer onClick={(projectId) => this.props.onCreateClick(projectId)}
                        projects={projectsList}/>
         </li>
       </ul>
