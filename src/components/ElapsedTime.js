@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import 'moment-duration-format';
 import lodash from 'lodash';
+import MinimalistSpinner from './MinimalistSpinner';
 import { computeElapsedSeconds } from '../util';
 
 export default class ElapsedTime extends Component {
@@ -56,7 +57,12 @@ export default class ElapsedTime extends Component {
   }
 
   render() {
-    const buttonContents = this.props.startedEpoch ? 'Stop' : 'Start';
+    let buttonContents = 'Start';
+    let startedIndicator = null;
+    if (this.props.startedEpoch) {
+      buttonContents = 'Stop';
+      startedIndicator = <MinimalistSpinner tickInterval={200} />;
+    }
 
     return (
       <div>
@@ -67,6 +73,7 @@ export default class ElapsedTime extends Component {
         <button onClick={this.toggleTimer()}>
           {buttonContents}
         </button>
+        {startedIndicator}
       </div>
     )
   }
