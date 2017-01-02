@@ -4,17 +4,11 @@ import App from './App';
 import { About } from './components/About';
 import Admin from './containers/Admin';
 import Timers from './containers/Timers';
-import { rootReducer } from './reducers';
 import { Router, Route, IndexRoute, browserHistory, Redirect } from 'react-router';
 import { Provider } from 'react-redux';
-import thunkMiddleware from 'redux-thunk';
-import { createStore, applyMiddleware } from 'redux';
-import createLogger from 'redux-logger';
+import configureStore from './store/configureStore';
 
-const logger = createLogger();
-
-let store = createStore(rootReducer,
-                        applyMiddleware(thunkMiddleware, logger));
+let store = configureStore();
 
 ReactDOM.render(
   <Provider store={store}>
