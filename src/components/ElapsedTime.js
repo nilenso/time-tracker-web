@@ -1,18 +1,8 @@
 import React, { Component } from 'react';
-import moment from 'moment';
-import 'moment-duration-format';
 import lodash from 'lodash';
-
-function computeElapsedSeconds(startedEpoch, duration) {
-  if (startedEpoch === null) {
-    return duration;
-  }
-
-  const now = moment();
-  const startedTime = moment.unix(startedEpoch);
-  const elapsedSeconds = now.diff(startedTime, 'seconds') + duration;
-  return elapsedSeconds;
-}
+import MinimalistSpinner from './MinimalistSpinner';
+import { computeElapsedSeconds,
+         toHoursAndMinutes } from '../util';
 
 export default class ElapsedTime extends Component {
   constructor(props) {
@@ -49,6 +39,11 @@ export default class ElapsedTime extends Component {
     else {
       this.intervalId = null;
     }
+
+    this.setState({
+      elapsedSeconds: computeElapsedSeconds(newProps.startedEpoch,
+                                            newProps.duration)
+    });
   }
 
   componentWillUnmount() {
@@ -61,17 +56,23 @@ export default class ElapsedTime extends Component {
   }
 
   render() {
-    const buttonContents = this.props.startedEpoch ? 'Stop' : 'Start';
+    let buttonContents = 'Start';
+    let startedIndicator = null;
+    if (this.props.startedEpoch) {
+      buttonContents = 'Stop';
+      startedIndicator = <MinimalistSpinner tickInterval={200} />;
+    }
 
+    const { hours, minutes } = toHoursAndMinutes(this.state.elapsedSeconds);
+    const hoursString = lodash.padStart(hours, 1, '0');
+    const minutesString = lodash.padStart(minutes, 2, '0');
     return (
       <div>
-        <span>
-          {moment.duration(this.state.elapsedSeconds, 'seconds')
-                 .format('hh:mm')}
-        </span>
+        <span>{`${hoursString}:${minutesString}`}</span>
         <button onClick={this.toggleTimer()}>
           {buttonContents}
         </button>
+        {startedIndicator}
       </div>
     )
   }

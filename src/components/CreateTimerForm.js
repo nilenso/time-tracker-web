@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class CreateTimer extends Component {
+export default class CreateTimerForm extends Component {
   constructor(props) {
     super(props);
 
