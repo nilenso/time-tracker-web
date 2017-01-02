@@ -5,17 +5,21 @@ import { fetchTimersOnDate,
          fetchProjects,
          startTimer,
          stopTimer,
-         createTimer } from '../thunks';
-import TimersDisplay from '../components/TimersDisplay';
+         createTimer,
+         updateTimerDuration
+        } from '../thunks';
+import TimersList from '../components/TimersList';
 import DatePicker from '../components/DatePicker';
 
-class Timers extends Component {
+class TimersPage extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       displayDate: moment()
     };
+
+    this.onTimerEdit = this.onTimerEdit.bind(this);
   }
 
   componentDidMount() {
@@ -31,7 +35,7 @@ class Timers extends Component {
     }
   }
 
-  onTimerClick(timer) {
+  onTimerToggle(timer) {
     const wsConnection = this.props.wsConnection;
     if (timer.get('started-time')) {
       this.props.dispatch(stopTimer(timer, wsConnection));
@@ -39,6 +43,11 @@ class Timers extends Component {
     else {
       this.props.dispatch(startTimer(timer, wsConnection));
     }
+  }
+
+  onTimerEdit(timer, duration) {
+    const wsConnection = this.props.wsConnection;
+    this.props.dispatch(updateTimerDuration(timer, duration, wsConnection));
   }
 
   onCreateClick(projectId) {
@@ -66,12 +75,13 @@ class Timers extends Component {
       <div>
         <DatePicker defaultMoment={this.state.displayDate}
                     onChangeDate={newMoment => this.setState({displayDate: newMoment})}
-                    />
-        <TimersDisplay timers={todaysTimers}
-                       projects={this.props.entities.get('projects')}
-                       onTimerClick={(timer) => this.onTimerClick(timer)}
-                       onCreateClick={(projectId) => this.onCreateClick(projectId)}
-                       />
+          />
+        <TimersList timers={todaysTimers}
+                    projects={this.props.entities.get('projects')}
+                    onTimerToggle={(timer) => this.onTimerToggle(timer)}
+                    onCreateClick={(projectId) => this.onCreateClick(projectId)}
+                    onTimerEdit={this.onTimerEdit}
+          />
       </div>
     );
   }
@@ -91,4 +101,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Timers);
+export default connect(mapStateToProps)(TimersPage);

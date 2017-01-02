@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { About } from './components/About';
-import Admin from './containers/Admin';
-import Timers from './containers/Timers';
+import AdminPage from './containers/AdminPage';
+import TimersPage from './containers/TimersPage';
 import { Router, Route, IndexRoute, browserHistory, Redirect } from 'react-router';
 import { Provider } from 'react-redux';
 import configureStore from './store/configureStore';
@@ -14,10 +14,10 @@ ReactDOM.render(
   <Provider store={store}>
     <Router history={browserHistory}>
       <Route path="/" component={App}>
-        <IndexRoute component={Timers} />
+        <IndexRoute component={TimersPage} />
         <Route path="about" component={About} />
-        <Route path="timers" component={Timers} />
-        <Route path="admin" component={Admin} />
+        <Route path="timers" component={TimersPage} />
+        <Route path="admin" component={AdminPage} />
       </Route>
       <Redirect from="*" to="/"/>
     </Router>
