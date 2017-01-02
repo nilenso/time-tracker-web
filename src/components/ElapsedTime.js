@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import moment from 'moment';
-import 'moment-duration-format';
 import lodash from 'lodash';
 import MinimalistSpinner from './MinimalistSpinner';
-import { computeElapsedSeconds } from '../util';
+import { computeElapsedSeconds,
+         toHoursAndMinutes } from '../util';
 
 export default class ElapsedTime extends Component {
   constructor(props) {
@@ -64,12 +63,12 @@ export default class ElapsedTime extends Component {
       startedIndicator = <MinimalistSpinner tickInterval={200} />;
     }
 
+    const { hours, minutes } = toHoursAndMinutes(this.state.elapsedSeconds);
+    const hoursString = lodash.padStart(hours, 1, '0');
+    const minutesString = lodash.padStart(minutes, 2, '0');
     return (
       <div>
-        <span>
-          {moment.duration(this.state.elapsedSeconds, 'seconds')
-                 .format('hh:mm')}
-        </span>
+        <span>{`${hoursString}:${minutesString}`}</span>
         <button onClick={this.toggleTimer()}>
           {buttonContents}
         </button>
