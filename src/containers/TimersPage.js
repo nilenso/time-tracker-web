@@ -36,18 +36,16 @@ class TimersPage extends Component {
   }
 
   onTimerToggle(timer) {
-    const wsConnection = this.props.wsConnection;
     if (timer.get('started-time')) {
-      this.props.dispatch(stopTimer(timer, wsConnection));
+      this.props.dispatch(stopTimer(timer));
     }
     else {
-      this.props.dispatch(startTimer(timer, wsConnection));
+      this.props.dispatch(startTimer(timer));
     }
   }
 
   onTimerEdit(timer, duration) {
-    const wsConnection = this.props.wsConnection;
-    this.props.dispatch(updateTimerDuration(timer, duration, wsConnection));
+    this.props.dispatch(updateTimerDuration(timer, duration));
   }
 
   onCreateClick(projectId) {
@@ -57,9 +55,7 @@ class TimersPage extends Component {
                           .month(displayDate.month())
                           .year(displayDate.year())
                           .unix();
-    this.props.dispatch(createTimer(projectId,
-                                    createdTime,
-                                    this.props.wsConnection));
+    this.props.dispatch(createTimer(projectId, createdTime));
   }
 
   render() {
@@ -94,8 +90,7 @@ function mapStateToProps(state) {
   return {
     entities: state.get('entities'),
     // TODO: Use this property to disable buttons.
-    isFetching: (timersState.get('isFetching') || isUserFetching),
-    wsConnection: state.get('wsConnection')
+    isFetching: (timersState.get('isFetching') || isUserFetching)
   };
 }
 

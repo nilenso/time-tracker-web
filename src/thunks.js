@@ -22,6 +22,10 @@ function getAuthToken() {
   return googleUser ? googleUser.getAuthResponse().id_token : null;
 }
 
+function getWsConnection() {
+  return store.getState().get('wsConnection');
+}
+
 function sendPing(wsConnection) {
   wsConnection.send(JSON.stringify({
     command: 'ping'
@@ -67,6 +71,7 @@ export function makeWSConnection() {
 
 export function createTimer(projectId, createTime, wsConnection) {
   return (dispatch) => {
+    const wsConnection = getWsConnection();
     if (!wsConnection.get('failed')) {
       const connection = wsConnection.get('connection');
       connection.send(JSON.stringify({
@@ -81,6 +86,7 @@ export function createTimer(projectId, createTime, wsConnection) {
 
 export function startTimer(timer, wsConnection) {
   return (dispatch) => {
+    const wsConnection = getWsConnection();
     if (!wsConnection.get('failed')) {
       const connection = wsConnection.get('connection');
       connection.send(JSON.stringify({
@@ -94,6 +100,7 @@ export function startTimer(timer, wsConnection) {
 
 export function stopTimer(timer, wsConnection) {
   return (dispatch) => {
+    const wsConnection = getWsConnection();
     if (!wsConnection.get('failed')) {
       const connection = wsConnection.get('connection');
       connection.send(JSON.stringify({
@@ -107,6 +114,7 @@ export function stopTimer(timer, wsConnection) {
 
 export function updateTimerDuration(timer, duration, wsConnection) {
   return (dispatch) => {
+    const wsConnection = getWsConnection();
     if (!wsConnection.get('failed')) {
       const connection = wsConnection.get('connection');
       connection.send(JSON.stringify({
