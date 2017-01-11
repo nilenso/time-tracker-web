@@ -116,7 +116,11 @@ function statusBarDataReducer(state = Immutable.Map({
 
     case ActionTypes.PROJECT_CREATED:
       return state.merge({text: 'project successfully created.',
-                          timeoutSeconds: 3})
+                          timeoutSeconds: 3});
+
+    case ActionTypes.INVOICE_DOWNLOAD_FAILED:
+      return state.merge({text: 'invoice download failed :(',
+                          timeoutSeconds: 4});
 
     default:
       return state;

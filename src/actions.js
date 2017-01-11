@@ -98,6 +98,28 @@ export function receiveProjects(projects) {
   };
 }
 
+// Invoice download actions
+export const START_INVOICE_DOWNLOAD = 'START_INVOICE_DOWNLOAD';
+export function startInvoiceDownload() {
+  return {
+    type: START_INVOICE_DOWNLOAD
+  };
+}
+
+export const FINISH_INVOICE_DOWNLOAD = 'FINISH_INVOICE_DOWNLOAD';
+export function finishInvoiceDownload() {
+  return {
+    type: FINISH_INVOICE_DOWNLOAD
+  };
+}
+
+export const INVOICE_DOWNLOAD_FAILED = 'INVOICE_DOWNLOAD_FAILED';
+export function invoiceDownloadFailed() {
+  return {
+    type: INVOICE_DOWNLOAD_FAILED
+  };
+}
+
 // Status bar actions
 
 export const CLEAR_STATUS_BAR = 'CLEAR_STATUS_BAR';

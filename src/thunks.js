@@ -13,7 +13,10 @@ import {
   projectCreated,
   receiveLocalUserData,
   receiveProjects,
-  receiveTimers
+  receiveTimers,
+  startInvoiceDownload,
+  finishInvoiceDownload,
+  invoiceDownloadFailed
 } from './actions';
 
 // Gets the auth token from the Redux store.
@@ -213,5 +216,39 @@ export function fetchLocalUserData() {
               const userData = response.body;
               dispatch(receiveLocalUserData(userData));
             });
+  }
+}
+
+function download(filename, text) {
+  let pom = document.createElement('a');
+  pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  pom.setAttribute('download', filename);
+
+  if (document.createEvent) {
+    let event = document.createEvent('MouseEvents');
+    event.initEvent('click', true, true);
+    pom.dispatchEvent(event);
+  }
+  else {
+    pom.click();
+  }
+}
+
+export function downloadInvoice() {
+  return (dispatch) => {
+    const authToken = getAuthToken();
+    if (!authToken) {
+      return;
+    }
+    const url = '/download/invoice/';
+    dispatch(startInvoiceDownload());
+    return Request
+            .get(url)
+            .set('Authorization', 'Bearer ' + authToken)
+            .then((response) => {
+              download('invoice.csv', response.text);
+              dispatch(finishInvoiceDownload());
+            })
+            .catch(() => dispatch(invoiceDownloadFailed()));
   }
 }
