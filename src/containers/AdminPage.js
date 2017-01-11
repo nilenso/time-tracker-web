@@ -7,7 +7,6 @@ function mapStateToProps(state) {
   const userRole = state.getIn(['userData', 'localUser', 'role']);
   const isAdmin = userRole === 'admin' ? true : false;
   return {
-    authToken: state.getIn(['userData', 'googleUser']).getAuthResponse().id_token,
     isAdmin
   };
 }
@@ -20,7 +19,7 @@ class AdminPage extends Component {
   }
 
   onCreateProjectFormSubmit(projectName) {
-    this.props.dispatch(createProject(projectName, this.props.authToken));
+    this.props.dispatch(createProject(projectName));
   }
 
   render() {
@@ -28,7 +27,7 @@ class AdminPage extends Component {
       return <CreateProjectForm onSubmit={this.onCreateProjectFormSubmit}/>
     }
     else {
-      return <p>You are not authorized to view this page.</p>
+      return <p>{"You are not authorized to view this page."}</p>
     }
   }
 }

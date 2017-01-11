@@ -6,9 +6,7 @@ import AdminPage from './containers/AdminPage';
 import TimersPage from './containers/TimersPage';
 import { Router, Route, IndexRoute, browserHistory, Redirect } from 'react-router';
 import { Provider } from 'react-redux';
-import configureStore from './store/configureStore';
-
-let store = configureStore();
+import store from './store';
 
 ReactDOM.render(
   <Provider store={store}>

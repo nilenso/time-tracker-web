@@ -1,6 +1,7 @@
 import Request from 'superagent';
 import Immutable from 'immutable';
 import moment from 'moment';
+import store from './store';
 
 import {
   wsConnectionFailed,
@@ -15,14 +16,21 @@ import {
   receiveTimers
 } from './actions';
 
+// Gets the auth token from the Redux store.
+function getAuthToken() {
+  const googleUser = store.getState().getIn(['userData', 'googleUser']);
+  return googleUser ? googleUser.getAuthResponse().id_token : null;
+}
+
 function sendPing(wsConnection) {
   wsConnection.send(JSON.stringify({
     command: 'ping'
   }));
 }
 
-export function makeWSConnection(authToken) {
+export function makeWSConnection() {
   return (dispatch) => {
+    const authToken = getAuthToken();
     const url = 'ws://' + window.location.host + '/api/timers/ws-connect/';
     let wsConnection
       = new WebSocket(url);
@@ -128,8 +136,12 @@ function normalizeArray(items) {
                   }, Immutable.Map({}));
 }
 
-export function fetchTimersOnDate(currentMoment, authToken) {
+export function fetchTimersOnDate(currentMoment) {
   return (dispatch) => {
+    const authToken = getAuthToken();
+    if (!authToken) {
+      return;
+    }
     dispatch(requestTimers());
     const url = '/api/timers/';
     return Request
@@ -147,8 +159,12 @@ export function fetchTimersOnDate(currentMoment, authToken) {
   }
 }
 
-export function fetchProjects(authToken) {
+export function fetchProjects() {
   return (dispatch) => {
+    const authToken = getAuthToken();
+    if (!authToken) {
+      return;
+    }
     return getAllProjects(authToken)
             .then((projects) => {
               const normalizedProjects = normalizeArray(projects);
@@ -157,8 +173,12 @@ export function fetchProjects(authToken) {
   }
 }
 
-export function createProject(projectName, authToken) {
+export function createProject(projectName) {
   return (dispatch) => {
+    const authToken = getAuthToken();
+    if (!authToken) {
+      return;
+    }
     const url = '/api/projects/';
     return Request
             .post(url)
@@ -171,8 +191,12 @@ export function createProject(projectName, authToken) {
   };
 }
 
-export function fetchLocalUserData(authToken) {
+export function fetchLocalUserData() {
   return (dispatch) => {
+    const authToken = getAuthToken();
+    if (!authToken) {
+      return;
+    }
     const url = '/api/users/me/';
     return Request
             .get(url)

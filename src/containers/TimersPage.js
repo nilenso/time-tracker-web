@@ -23,15 +23,15 @@ class TimersPage extends Component {
   }
 
   componentDidMount() {
-    const { dispatch, authToken } = this.props;
-    dispatch(fetchTimersOnDate(this.state.displayDate, authToken));
-    dispatch(fetchProjects(authToken));
+    const { dispatch } = this.props;
+    dispatch(fetchTimersOnDate(this.state.displayDate));
+    dispatch(fetchProjects());
   }
 
   componentWillUpdate(nextProps, nextState) {
-    const { dispatch, authToken } = this.props;
+    const { dispatch } = this.props;
     if (!nextState.displayDate.isSame(this.state.displayDate)) {
-      dispatch(fetchTimersOnDate(nextState.displayDate, authToken));
+      dispatch(fetchTimersOnDate(nextState.displayDate));
     }
   }
 
@@ -91,12 +91,10 @@ function mapStateToProps(state) {
   const timersState = state.get('timers');
   const googleUser = state.getIn(['userData', 'googleUser']);
   const isUserFetching = (googleUser === null);
-  const authToken = googleUser ? googleUser.getAuthResponse().id_token : null;
   return {
     entities: state.get('entities'),
     // TODO: Use this property to disable buttons.
     isFetching: (timersState.get('isFetching') || isUserFetching),
-    authToken,
     wsConnection: state.get('wsConnection')
   };
 }
