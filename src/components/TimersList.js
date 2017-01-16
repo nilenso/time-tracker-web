@@ -32,7 +32,8 @@ export default class TimersList extends Component {
                             .valueSeq()
                             .sortBy(timer => timer.get('time-created'))
                             .map((timer) => this.createTimerElement(timer));
-    const projectsList = this.props.projects.valueSeq();
+    const projectsList = this.props.projects.valueSeq()
+                                            .sortBy(project => project.get('name'));
     return (
       <ul>
         {timerElements}
