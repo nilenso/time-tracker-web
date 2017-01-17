@@ -68,6 +68,9 @@ export default class EditTimerForm extends Component {
                   onChange={this.handleNotesChange}
           />
         <input type="submit" value="Update" />
+        <button type="button" onClick={this.props.onCancel}>
+          Cancel
+        </button>
       </form>
     );
   }

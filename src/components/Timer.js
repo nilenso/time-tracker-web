@@ -21,19 +21,17 @@ export default class Timer extends Component {
   render() {
     if (this.state.editing) {
       return (
-        <div>
-          <EditTimerForm startedEpoch={this.props.timer.get('started-time')}
-                         duration={this.props.timer.get('duration')}
-                         notes={this.props.timer.get('notes')}
-                         onSubmit={this.onTimerEdit}
-            />
-          <button onClick={() => this.setState({editing: false})}>
-            Cancel
-          </button>
-        </div>
+        <EditTimerForm startedEpoch={this.props.timer.get('started-time')}
+                       duration={this.props.timer.get('duration')}
+                       notes={this.props.timer.get('notes')}
+                       onSubmit={this.onTimerEdit}
+                       onCancel={() => this.setState({editing: false})}
+          />
       );
     }
     else {
+      const notesContent = this.props.timer.get('notes');
+      const notesElement = notesContent ? (<li>{notesContent}</li>) : null;
       return (
         <ul>
           <li>Project: {this.props.projectName}</li>
@@ -43,9 +41,7 @@ export default class Timer extends Component {
                          onClick={this.props.onTimerToggle}
               />
           </li>
-          <li>
-            {this.props.timer.get('notes')}
-          </li>
+          {notesElement}
           <li>
             <button onClick={() => this.setState({editing: true})}>
               Edit

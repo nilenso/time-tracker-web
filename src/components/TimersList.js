@@ -3,6 +3,15 @@ import Timer from '../components/Timer';
 import CreateTimerForm from '../components/CreateTimerForm';
 
 export default class TimersList extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showForm: false
+    };
+
+    this.onFormSubmit = this.onFormSubmit.bind(this);
+  }
 
   createTimerElement(timer) {
     const project = this.props.projects.get(timer.get('project-id'));
@@ -23,6 +32,11 @@ export default class TimersList extends Component {
     );
   }
 
+  onFormSubmit(projectId, notes) {
+    this.props.onCreateClick(projectId, notes);
+    this.setState({showForm: false});
+  }
+
   render() {
     const timerElements = this.props.timers
                             .valueSeq()
@@ -30,13 +44,25 @@ export default class TimersList extends Component {
                             .map((timer) => this.createTimerElement(timer));
     const projectsList = this.props.projects.valueSeq()
                                             .sortBy(project => project.get('name'));
+
+    const form = (
+      <CreateTimerForm onSubmit={this.onFormSubmit}
+                       onCancel={() => this.setState({showForm: false})}
+                       projects={projectsList}
+        />
+    );
+    const button = (
+      <button onClick={() => this.setState({showForm: true})}>
+        +
+      </button>
+    );
+    const formOrButton = this.state.showForm ? form : button;
+
     return (
       <ul>
         {timerElements}
         <li>
-          <CreateTimerForm onSubmit={this.props.onCreateClick}
-                           projects={projectsList}
-            />
+          {formOrButton}
         </li>
       </ul>
     )
