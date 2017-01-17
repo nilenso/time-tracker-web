@@ -6,7 +6,7 @@ import { fetchTimersOnDate,
          startTimer,
          stopTimer,
          createTimer,
-         updateTimerDuration
+         updateTimer
         } from '../thunks';
 import TimersList from '../components/TimersList';
 import DatePicker from '../components/DatePicker';
@@ -20,6 +20,8 @@ class TimersPage extends Component {
     };
 
     this.onTimerEdit = this.onTimerEdit.bind(this);
+    this.onTimerToggle = this.onTimerToggle.bind(this);
+    this.onCreateClick = this.onCreateClick.bind(this);
   }
 
   componentDidMount() {
@@ -44,18 +46,18 @@ class TimersPage extends Component {
     }
   }
 
-  onTimerEdit(timer, duration) {
-    this.props.dispatch(updateTimerDuration(timer, duration));
+  onTimerEdit(timer, duration, notes) {
+    this.props.dispatch(updateTimer(timer, duration, notes));
   }
 
-  onCreateClick(projectId) {
+  onCreateClick(projectId, notes) {
     const displayDate = this.state.displayDate;
     const createdTime = moment()
                           .date(displayDate.date())
                           .month(displayDate.month())
                           .year(displayDate.year())
                           .unix();
-    this.props.dispatch(createTimer(projectId, createdTime));
+    this.props.dispatch(createTimer(projectId, createdTime, notes));
   }
 
   render() {
@@ -74,8 +76,8 @@ class TimersPage extends Component {
           />
         <TimersList timers={todaysTimers}
                     projects={this.props.entities.get('projects')}
-                    onTimerToggle={(timer) => this.onTimerToggle(timer)}
-                    onCreateClick={(projectId) => this.onCreateClick(projectId)}
+                    onTimerToggle={this.onTimerToggle}
+                    onCreateClick={this.onCreateClick}
                     onTimerEdit={this.onTimerEdit}
           />
       </div>

@@ -3,6 +3,7 @@ import Timer from '../components/Timer';
 import CreateTimerForm from '../components/CreateTimerForm';
 
 export default class TimersList extends Component {
+
   createTimerElement(timer) {
     const project = this.props.projects.get(timer.get('project-id'));
     if (!project) {
@@ -11,18 +12,13 @@ export default class TimersList extends Component {
 
     return (
       <li key={timer.get('id')}>
-        <ul>
-          <li>
-            Project: {project.get('name')}
-          </li>
-          <li>
-            <Timer startedEpoch={timer.get('started-time')}
-                        duration={timer.get('duration')}
-                        onTimerToggle={() => this.props.onTimerToggle(timer)}
-                        onTimerEdit={(duration) => this.props.onTimerEdit(timer, duration)}
-              />
-          </li>
-        </ul>
+        <Timer timer={timer}
+               projectName={project.get('name')}
+               onTimerToggle={() => this.props.onTimerToggle(timer)}
+               onTimerEdit={(duration, notes) => {
+                 this.props.onTimerEdit(timer, duration, notes);
+               }}
+          />
       </li>
     );
   }
@@ -38,8 +34,9 @@ export default class TimersList extends Component {
       <ul>
         {timerElements}
         <li>
-          <CreateTimerForm onClick={(projectId) => this.props.onCreateClick(projectId)}
-                       projects={projectsList}/>
+          <CreateTimerForm onSubmit={this.props.onCreateClick}
+                           projects={projectsList}
+            />
         </li>
       </ul>
     )

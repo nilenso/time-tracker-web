@@ -7,7 +7,8 @@ export default class CreateTimerForm extends Component {
     const firstProject = props.projects.first();
     this.state = {
       showForm: false,
-      selectedValue: firstProject ? firstProject.get('id') : ''
+      projectId: firstProject ? firstProject.get('id') : '',
+      notes: ''
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -20,12 +21,14 @@ export default class CreateTimerForm extends Component {
   }
 
   handleChange(event) {
-    this.setState({selectedValue: event.target.value});
+    const elementName = event.target.name;
+    this.setState({[elementName]: event.target.value});
   }
 
   handleSubmit(event) {
     const projectId = parseInt(this.state.selectedValue, 10);
-    this.props.onClick(projectId);
+    const notes = this.state.notes || '';
+    this.props.onSubmit(projectId, notes);
     this.setState({showForm: false});
     event.preventDefault();
   }
@@ -42,10 +45,15 @@ export default class CreateTimerForm extends Component {
 
       return (
         <form onSubmit={this.handleSubmit}>
-          <select value={this.state.selectedValue}
-                  onChange={this.handleChange}>
+          <select value={this.state.projectId}
+                  onChange={this.handleChange}
+                  name="projectId">
             {projectOptions}
           </select>
+          <textarea value={this.state.notes}
+                    onChange={this.handleChange}
+                    name="notes"
+            />
           <input type="submit" value="Create" />
           <button type="button" onClick={() => this.setState({showForm: false})}>
             Cancel

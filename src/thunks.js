@@ -72,7 +72,7 @@ export function makeWSConnection() {
   };
 }
 
-export function createTimer(projectId, createTime, wsConnection) {
+export function createTimer(projectId, createTime, notes) {
   return (dispatch) => {
     const wsConnection = getWsConnection();
     if (!wsConnection.get('failed')) {
@@ -81,13 +81,14 @@ export function createTimer(projectId, createTime, wsConnection) {
         command: 'create-and-start-timer',
         'project-id': projectId,
         'started-time': moment().unix(),
-        'created-time': createTime
+        'created-time': createTime,
+        'notes': notes
       }));
     }
   }
 }
 
-export function startTimer(timer, wsConnection) {
+export function startTimer(timer) {
   return (dispatch) => {
     const wsConnection = getWsConnection();
     if (!wsConnection.get('failed')) {
@@ -101,7 +102,7 @@ export function startTimer(timer, wsConnection) {
   }
 }
 
-export function stopTimer(timer, wsConnection) {
+export function stopTimer(timer) {
   return (dispatch) => {
     const wsConnection = getWsConnection();
     if (!wsConnection.get('failed')) {
@@ -115,16 +116,17 @@ export function stopTimer(timer, wsConnection) {
   }
 }
 
-export function updateTimerDuration(timer, duration, wsConnection) {
+export function updateTimer(timer, duration, notes) {
   return (dispatch) => {
     const wsConnection = getWsConnection();
     if (!wsConnection.get('failed')) {
       const connection = wsConnection.get('connection');
       connection.send(JSON.stringify({
-        command: 'change-timer-duration',
+        command: 'update-timer',
         'timer-id': timer.get('id'),
         'current-time': moment().unix(),
-        duration
+        duration,
+        notes
       }));
     }
   }

@@ -10,33 +10,37 @@ export default class EditTimerForm extends Component {
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTimerChange = this.handleTimerChange.bind(this);
+    this.handleNotesChange = this.handleNotesChange.bind(this);
   }
 
-  stateFromProps({startedEpoch, duration}) {
+  stateFromProps({startedEpoch, duration, notes}) {
     const seconds = computeElapsedSeconds(startedEpoch, duration);
-    return {
-      seconds: seconds,
-      ui: toHoursAndMinutes(seconds)
-    };
+    return Object.assign({notes}, toHoursAndMinutes(seconds));
   }
 
   componentWillReceiveProps(newProps) {
     if (newProps.startedEpoch !== this.props.startedEpoch
-        || newProps.duration !== this.props.duration) {
+        || newProps.duration !== this.props.duration
+        || newProps.notes !== this.props.notes) {
       this.setState(this.stateFromProps(newProps));
     }
   }
 
   handleTimerChange(event) {
     this.setState({
-      ui: Object.assign(this.state.ui, {
-        [event.target.name]: parseInt(event.target.value, 10) || 0
-      })
+      [event.target.name]: parseInt(event.target.value, 10) || 0
+    });
+  }
+
+  handleNotesChange(event) {
+    this.setState({
+      notes: event.target.value
     });
   }
 
   handleSubmit(event) {
-    this.props.onClick(toSeconds(this.state.ui.hours, this.state.ui.minutes));
+    this.props.onSubmit(toSeconds(this.state.hours, this.state.minutes),
+                        this.state.notes);
     event.preventDefault();
   }
 
@@ -45,17 +49,23 @@ export default class EditTimerForm extends Component {
       <form onSubmit={this.handleSubmit}>
         <label htmlFor="hours">Hours:</label>
         <input type="text"
-               value={this.state.ui.hours}
+               value={this.state.hours}
                name="hours"
                id="hours"
                onChange={this.handleTimerChange}
           />
         <label htmlFor="minutes">Minutes:</label>
         <input type="text"
-               value={this.state.ui.minutes}
+               value={this.state.minutes}
                name="minutes"
                id="minutes"
                onChange={this.handleTimerChange}
+          />
+        <label htmlFor="notes">Notes:</label>
+        <textarea value={this.state.notes}
+                  name="notes"
+                  id="notes"
+                  onChange={this.handleNotesChange}
           />
         <input type="submit" value="Update" />
       </form>
