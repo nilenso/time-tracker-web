@@ -28,5 +28,5 @@ function mapDispatchToProps(dispatch) {
   }
 }
 
-export const SignIn = connect(mapStateToProps,
-                              mapDispatchToProps)(SignInDisplay);
+export default connect(mapStateToProps,
+                       mapDispatchToProps)(SignInDisplay);
