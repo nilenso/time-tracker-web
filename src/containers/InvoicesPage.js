@@ -1,10 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { downloadInvoice } from '../thunks';
+import DownloadInvoiceForm from '../components/DownloadInvoiceForm';
 
 function InvoicesPage({onDownloadClick}) {
   return (
-    <button onClick={onDownloadClick}>Download invoice</button>
+    <DownloadInvoiceForm onSubmit={onDownloadClick} />
   );
 }
 
@@ -14,8 +15,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onDownloadClick: () => {
-      dispatch(downloadInvoice());
+    onDownloadClick: (start, end) => {
+      dispatch(downloadInvoice(start, end));
     }
   };
 }

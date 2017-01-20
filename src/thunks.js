@@ -236,7 +236,7 @@ function download(filename, text) {
   }
 }
 
-export function downloadInvoice() {
+export function downloadInvoice(start, end) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
@@ -247,6 +247,10 @@ export function downloadInvoice() {
     return Request
             .get(url)
             .set('Authorization', 'Bearer ' + authToken)
+            .query({
+              start: start.clone().startOf('day').unix(),
+              end: end.clone().startOf('day').add(1, 'days').unix()
+            })
             .then((response) => {
               download('invoice.csv', response.text);
               dispatch(finishInvoiceDownload());
