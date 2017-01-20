@@ -16,7 +16,8 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onDownloadClick: (start, end) => {
-      dispatch(downloadInvoice(start, end));
+      dispatch(downloadInvoice(start.clone().startOf('day'),
+                               end.clone().startOf('day').add(1, 'days')));
     }
   };
 }

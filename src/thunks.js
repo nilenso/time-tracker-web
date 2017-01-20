@@ -149,7 +149,7 @@ function normalizeArray(items) {
                   }, Immutable.Map({}));
 }
 
-export function fetchTimersOnDate(currentMoment) {
+export function fetchTimersBetween(start, end) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
@@ -160,8 +160,10 @@ export function fetchTimersOnDate(currentMoment) {
     return Request
             .get(url)
             .set('Authorization', 'Bearer ' + authToken)
-            .query({date: currentMoment.unix()})
-            .query({'utc-offset': currentMoment.utcOffset()})
+            .query({
+              start: start.unix(),
+              end: end.unix()
+            })
             .then((response) => {
               const timers = normalizeArray(response.body);
               dispatch(receiveTimers(timers));
@@ -248,8 +250,8 @@ export function downloadInvoice(start, end) {
             .get(url)
             .set('Authorization', 'Bearer ' + authToken)
             .query({
-              start: start.clone().startOf('day').unix(),
-              end: end.clone().startOf('day').add(1, 'days').unix()
+              start: start.unix(),
+              end: end.unix()
             })
             .then((response) => {
               download('invoice.csv', response.text);
