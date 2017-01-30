@@ -8,12 +8,14 @@ export default class DownloadInvoiceForm extends Component {
 
     this.state = {
       start: moment().startOf('day'),
-      end: moment().startOf('day')
+      end: moment().startOf('day'),
+      client: props.clients.first()
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleStartChange = this.handleStartChange.bind(this);
     this.handleEndChange = this.handleEndChange.bind(this);
+    this.handleClientChange = this.handleClientChange.bind(this);
   }
 
   handleStartChange(newStart) {
@@ -38,13 +40,26 @@ export default class DownloadInvoiceForm extends Component {
     });
   }
 
+  handleClientChange(event) {
+    this.setState({
+      client: event.target.value
+    });
+  }
+
   handleSubmit(event) {
     event.preventDefault();
-    const { start, end } = this.state;
-    this.props.onSubmit(start, end);
+    const { start, end, client } = this.state;
+    this.props.onSubmit(start, end, client);
   }
 
   render() {
+    const clientOptions = this.props.clients.map((client, index) => {
+      return (
+        <option key={index} value={client}>
+          {client}
+        </option>
+      );
+    });
     return (
       <form onSubmit={this.handleSubmit}>
         <label>{"From (inclusive):"}</label>
@@ -57,6 +72,11 @@ export default class DownloadInvoiceForm extends Component {
                     onChangeDate={this.handleEndChange}
                     defaultMoment={this.state.end}
           />
+        <select value={this.state.client}
+                onChange={this.handleClientChange}
+                name="client">
+          {clientOptions}
+        </select>
         <input type="submit" value="Download invoice" />
       </form>
     );

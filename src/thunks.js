@@ -238,7 +238,7 @@ function download(filename, text) {
   }
 }
 
-export function downloadInvoice(start, end) {
+export function downloadInvoice(start, end, client) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
@@ -251,7 +251,8 @@ export function downloadInvoice(start, end) {
             .set('Authorization', 'Bearer ' + authToken)
             .query({
               start: start.unix(),
-              end: end.unix()
+              end: end.unix(),
+              client: client
             })
             .then((response) => {
               download('invoice.csv', response.text);
