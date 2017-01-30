@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { fetchTimersBetween,
-         fetchProjects,
          startTimer,
          stopTimer,
          createTimer,
@@ -32,9 +31,7 @@ class TimersPage extends Component {
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
     this.fetchTimersOnDate(this.state.displayDate);
-    dispatch(fetchProjects());
   }
 
   onChangeDate(newDate) {
