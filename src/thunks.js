@@ -72,7 +72,7 @@ export function makeWSConnection() {
   };
 }
 
-export function createTimer(projectId, createTime, wsConnection) {
+export function createTimer(projectId, createTime, notes) {
   return (dispatch) => {
     const wsConnection = getWsConnection();
     if (!wsConnection.get('failed')) {
@@ -81,13 +81,14 @@ export function createTimer(projectId, createTime, wsConnection) {
         command: 'create-and-start-timer',
         'project-id': projectId,
         'started-time': moment().unix(),
-        'created-time': createTime
+        'created-time': createTime,
+        'notes': notes
       }));
     }
   }
 }
 
-export function startTimer(timer, wsConnection) {
+export function startTimer(timer) {
   return (dispatch) => {
     const wsConnection = getWsConnection();
     if (!wsConnection.get('failed')) {
@@ -101,7 +102,7 @@ export function startTimer(timer, wsConnection) {
   }
 }
 
-export function stopTimer(timer, wsConnection) {
+export function stopTimer(timer) {
   return (dispatch) => {
     const wsConnection = getWsConnection();
     if (!wsConnection.get('failed')) {
@@ -115,16 +116,17 @@ export function stopTimer(timer, wsConnection) {
   }
 }
 
-export function updateTimerDuration(timer, duration, wsConnection) {
+export function updateTimer(timer, duration, notes) {
   return (dispatch) => {
     const wsConnection = getWsConnection();
     if (!wsConnection.get('failed')) {
       const connection = wsConnection.get('connection');
       connection.send(JSON.stringify({
-        command: 'change-timer-duration',
+        command: 'update-timer',
         'timer-id': timer.get('id'),
         'current-time': moment().unix(),
-        duration
+        duration,
+        notes
       }));
     }
   }
@@ -147,7 +149,7 @@ function normalizeArray(items) {
                   }, Immutable.Map({}));
 }
 
-export function fetchTimersOnDate(currentMoment) {
+export function fetchTimersBetween(start, end) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
@@ -158,8 +160,10 @@ export function fetchTimersOnDate(currentMoment) {
     return Request
             .get(url)
             .set('Authorization', 'Bearer ' + authToken)
-            .query({date: currentMoment.unix()})
-            .query({'utc-offset': currentMoment.utcOffset()})
+            .query({
+              start: start.unix(),
+              end: end.unix()
+            })
             .then((response) => {
               const timers = normalizeArray(response.body);
               dispatch(receiveTimers(timers));
@@ -234,7 +238,7 @@ function download(filename, text) {
   }
 }
 
-export function downloadInvoice() {
+export function downloadInvoice(start, end, client) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
@@ -245,6 +249,11 @@ export function downloadInvoice() {
     return Request
             .get(url)
             .set('Authorization', 'Bearer ' + authToken)
+            .query({
+              start: start.unix(),
+              end: end.unix(),
+              client: client
+            })
             .then((response) => {
               download('invoice.csv', response.text);
               dispatch(finishInvoiceDownload());

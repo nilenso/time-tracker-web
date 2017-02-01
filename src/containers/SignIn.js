@@ -1,7 +1,11 @@
 import SignInDisplay from '../components/SignInDisplay';
 import { connect } from 'react-redux';
 import { userSignedIn } from '../actions';
-import { makeWSConnection, fetchLocalUserData } from '../thunks';
+import {
+  makeWSConnection,
+  fetchLocalUserData,
+  fetchProjects
+ } from '../thunks';
 
 function mapStateToProps(state) {
   if (state.getIn(['userData', 'googleUser'])) {
@@ -24,9 +28,10 @@ function mapDispatchToProps(dispatch) {
       dispatch(
         makeWSConnection(token));
       dispatch(fetchLocalUserData(token));
+      dispatch(fetchProjects());
     }
   }
 }
 
-export const SignIn = connect(mapStateToProps,
-                              mapDispatchToProps)(SignInDisplay);
+export default connect(mapStateToProps,
+                       mapDispatchToProps)(SignInDisplay);

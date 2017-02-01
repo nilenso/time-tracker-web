@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { fetchTimersOnDate,
-         fetchProjects,
+import { fetchTimersBetween,
          startTimer,
          stopTimer,
          createTimer,
-         updateTimerDuration
+         updateTimer
         } from '../thunks';
 import TimersList from '../components/TimersList';
 import DatePicker from '../components/DatePicker';
@@ -19,20 +18,25 @@ class TimersPage extends Component {
       displayDate: moment()
     };
 
+    this.onChangeDate = this.onChangeDate.bind(this);
     this.onTimerEdit = this.onTimerEdit.bind(this);
+    this.onTimerToggle = this.onTimerToggle.bind(this);
+    this.onCreateClick = this.onCreateClick.bind(this);
+  }
+
+  fetchTimersOnDate(theDate) {
+    const start = theDate.clone().startOf('day');
+    const end = start.clone().add(1, 'days');
+    this.props.dispatch(fetchTimersBetween(start, end));
   }
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch(fetchTimersOnDate(this.state.displayDate));
-    dispatch(fetchProjects());
+    this.fetchTimersOnDate(this.state.displayDate);
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    const { dispatch } = this.props;
-    if (!nextState.displayDate.isSame(this.state.displayDate)) {
-      dispatch(fetchTimersOnDate(nextState.displayDate));
-    }
+  onChangeDate(newDate) {
+    this.fetchTimersOnDate(newDate);
+    this.setState({displayDate: newDate});
   }
 
   onTimerToggle(timer) {
@@ -44,18 +48,18 @@ class TimersPage extends Component {
     }
   }
 
-  onTimerEdit(timer, duration) {
-    this.props.dispatch(updateTimerDuration(timer, duration));
+  onTimerEdit(timer, duration, notes) {
+    this.props.dispatch(updateTimer(timer, duration, notes));
   }
 
-  onCreateClick(projectId) {
+  onCreateClick(projectId, notes) {
     const displayDate = this.state.displayDate;
     const createdTime = moment()
                           .date(displayDate.date())
                           .month(displayDate.month())
                           .year(displayDate.year())
                           .unix();
-    this.props.dispatch(createTimer(projectId, createdTime));
+    this.props.dispatch(createTimer(projectId, createdTime, notes));
   }
 
   render() {
@@ -70,12 +74,12 @@ class TimersPage extends Component {
     return (
       <div>
         <DatePicker defaultMoment={this.state.displayDate}
-                    onChangeDate={newMoment => this.setState({displayDate: newMoment})}
+                    onChangeDate={this.onChangeDate}
           />
         <TimersList timers={todaysTimers}
                     projects={this.props.entities.get('projects')}
-                    onTimerToggle={(timer) => this.onTimerToggle(timer)}
-                    onCreateClick={(projectId) => this.onCreateClick(projectId)}
+                    onTimerToggle={this.onTimerToggle}
+                    onCreateClick={this.onCreateClick}
                     onTimerEdit={this.onTimerEdit}
           />
       </div>

@@ -5,21 +5,29 @@ export default class DatePicker extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      displayValue: props.defaultMoment.format('DD-MM-YYYY')
-    };
+    this.state = this.stateFromProps(props);
 
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleOnSetDate = this.handleOnSetDate.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleReduceDate = this.handleReduceDate.bind(this);
     this.handleIncreaseDate = this.handleIncreaseDate.bind(this);
+  }
+
+  stateFromProps(props) {
+    return {
+      displayValue: props.defaultMoment.format('DD-MM-YYYY')
+    };
+  }
+
+  componentWillReceiveProps(newProps) {
+    this.setState(this.stateFromProps(newProps));
   }
 
   handleChange(event) {
     this.setState({displayValue: event.target.value});
   }
 
-  handleSubmit(event) {
+  handleOnSetDate(event) {
     const newMoment = moment(this.state.displayValue, 'DD-MM-YYYY', true);
     if (newMoment.isValid()) {
       this.props.onChangeDate(newMoment);
@@ -47,7 +55,7 @@ export default class DatePicker extends Component {
 
   render() {
     return (
-      <form onSubmit={this.handleSubmit}>
+      <div>
         <input type="text"
                value={this.state.displayValue}
                onChange={this.handleChange} />
@@ -57,8 +65,10 @@ export default class DatePicker extends Component {
         <button type="button" onClick={this.handleIncreaseDate}>
           {"Forward>"}
         </button>
-        <input type="submit" value="Change date" />
-      </form>
+        <button type="button" onClick={this.handleOnSetDate}>
+          {"Change date"}
+        </button>
+      </div>
     );
   }
 }

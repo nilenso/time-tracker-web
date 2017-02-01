@@ -1,5 +1,5 @@
 import React from 'react';
-import {SignIn} from './containers/SignIn';
+import SignIn from './containers/SignIn';
 import StatusBar from './containers/StatusBar';
 import { Link } from 'react-router';
 

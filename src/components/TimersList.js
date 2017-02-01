@@ -3,6 +3,16 @@ import Timer from '../components/Timer';
 import CreateTimerForm from '../components/CreateTimerForm';
 
 export default class TimersList extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      showForm: false
+    };
+
+    this.onFormSubmit = this.onFormSubmit.bind(this);
+  }
+
   createTimerElement(timer) {
     const project = this.props.projects.get(timer.get('project-id'));
     if (!project) {
@@ -11,20 +21,20 @@ export default class TimersList extends Component {
 
     return (
       <li key={timer.get('id')}>
-        <ul>
-          <li>
-            Project: {project.get('name')}
-          </li>
-          <li>
-            <Timer startedEpoch={timer.get('started-time')}
-                        duration={timer.get('duration')}
-                        onTimerToggle={() => this.props.onTimerToggle(timer)}
-                        onTimerEdit={(duration) => this.props.onTimerEdit(timer, duration)}
-              />
-          </li>
-        </ul>
+        <Timer timer={timer}
+               projectName={project.get('name')}
+               onTimerToggle={() => this.props.onTimerToggle(timer)}
+               onTimerEdit={(duration, notes) => {
+                 this.props.onTimerEdit(timer, duration, notes);
+               }}
+          />
       </li>
     );
+  }
+
+  onFormSubmit(projectId, notes) {
+    this.props.onCreateClick(projectId, notes);
+    this.setState({showForm: false});
   }
 
   render() {
@@ -34,12 +44,25 @@ export default class TimersList extends Component {
                             .map((timer) => this.createTimerElement(timer));
     const projectsList = this.props.projects.valueSeq()
                                             .sortBy(project => project.get('name'));
+
+    const form = (
+      <CreateTimerForm onSubmit={this.onFormSubmit}
+                       onCancel={() => this.setState({showForm: false})}
+                       projects={projectsList}
+        />
+    );
+    const button = (
+      <button onClick={() => this.setState({showForm: true})}>
+        +
+      </button>
+    );
+    const formOrButton = this.state.showForm ? form : button;
+
     return (
       <ul>
         {timerElements}
         <li>
-          <CreateTimerForm onClick={(projectId) => this.props.onCreateClick(projectId)}
-                       projects={projectsList}/>
+          {formOrButton}
         </li>
       </ul>
     )

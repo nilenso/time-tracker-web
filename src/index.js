@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { About } from './components/About';
+import About from './components/About';
 import AdminPage from './containers/AdminPage';
 import TimersPage from './containers/TimersPage';
 import InvoicesPage from './containers/InvoicesPage';
