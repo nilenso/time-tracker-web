@@ -4,7 +4,8 @@ import { userSignedIn } from '../actions';
 import {
   makeWSConnection,
   fetchLocalUserData,
-  fetchProjects
+  fetchProjects,
+  fetchAllUsers
  } from '../thunks';
 
 function mapStateToProps(state) {
@@ -29,6 +30,7 @@ function mapDispatchToProps(dispatch) {
         makeWSConnection(token));
       dispatch(fetchLocalUserData(token));
       dispatch(fetchProjects());
+      dispatch(fetchAllUsers());
     }
   }
 }
