@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import DatePicker from './DatePicker';
 import moment from 'moment';
+import Immutable from 'immutable';
 
 export default class DownloadInvoiceForm extends Component {
   constructor(props) {
@@ -78,13 +79,15 @@ export default class DownloadInvoiceForm extends Component {
     event.preventDefault();
     const { start, end, client, address, notes, userRates, currency }
       = this.state;
-    const userIdToRate = userRates.map(user => {
-      return user.get('rate');
-    });
-    const taxes = this.state.showTaxes ? {
-      [this.state.taxName1]: parseFloat(this.state.taxPercent1),
-      [this.state.taxName2]: parseFloat(this.state.taxPercent2)
-    } : null;
+    const userIdToRate = userRates.valueSeq()
+      .map((user, i) => {
+        return Immutable.Map({ 'user-id': i, 'rate': user.get('rate') });
+      })
+      .toList();
+    const taxes = this.state.showTaxes ? [
+      { 'tax-name': this.state.taxName1, 'percentage': parseFloat(this.state.taxPercent1) },
+      { 'tax-name': this.state.taxName2, 'percentage': parseFloat(this.state.taxPercent2) }
+     ] : null;
     this.props.onSubmit({start, end, client, address,
       notes, userIdToRate, currency, taxes});
   }
