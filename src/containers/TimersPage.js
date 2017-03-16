@@ -9,7 +9,7 @@ import { fetchTimersBetween,
         } from '../thunks';
 import TimersList from '../components/TimersList';
 import DatePicker from '../components/DatePicker';
-import MinimalistSpinner from '../components/MinimalistSpinner';
+import { Notification } from 'react-notification';
 
 class TimersPage extends Component {
   constructor(props) {
@@ -71,11 +71,6 @@ class TimersPage extends Component {
     const todaysTimers = this.props.entities
                                    .get('timers')
                                    .filter(wasCreatedToday);
-    const websocketReconnecting = (
-      <div style={{color: "red"}}>
-        {"Couldn't connect to server. Trying to re-establish the connection. "}
-        <MinimalistSpinner tickInterval={200} />
-      </div>);
     return (
       <div>
         <DatePicker defaultMoment={this.state.displayDate}
@@ -87,7 +82,12 @@ class TimersPage extends Component {
                     onCreateClick={this.onCreateClick}
                     onTimerEdit={this.onTimerEdit}
           />
-          { this.props.isWsConnectionDead ? websocketReconnecting : null }
+        <Notification
+          isActive={this.props.isWsConnectionDead}
+          dismissAfter={false}
+          message="Trying to reconnect..."
+          title="Connection lost." 
+        />
       </div>
     );
   }
@@ -96,7 +96,7 @@ class TimersPage extends Component {
 function mapStateToProps(state) {
   const timersState = state.get('timers');
   const googleUser = state.getIn(['userData', 'googleUser']);
-  const isWsConnectionDead = state.get('wsConnection').get('connection') !== null && state.get('wsConnection').get('connection').readyState == 3;
+  const isWsConnectionDead = state.get('wsConnection').get('connection') !== null && state.get('wsConnection').get('connection').readyState === 3;
   const isUserFetching = (googleUser === null);
   return {
     entities: state.get('entities'),
