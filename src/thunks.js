@@ -1,6 +1,5 @@
 import Request from 'superagent';
 import Immutable from 'immutable';
-import moment from 'moment';
 import store from './store';
 
 import {
@@ -81,7 +80,6 @@ export function createTimer(projectId, createTime, notes) {
       connection.send(JSON.stringify({
         command: 'create-and-start-timer',
         'project-id': projectId,
-        'started-time': moment().unix(),
         'created-time': createTime,
         'notes': notes
       }));
@@ -96,8 +94,7 @@ export function startTimer(timer) {
       const connection = wsConnection.get('connection');
       connection.send(JSON.stringify({
         command: 'start-timer',
-        'timer-id': timer.get('id'),
-        'started-time': moment().unix()
+        'timer-id': timer.get('id')
       }));
     }
   }
@@ -110,8 +107,7 @@ export function stopTimer(timer) {
       const connection = wsConnection.get('connection');
       connection.send(JSON.stringify({
         command: 'stop-timer',
-        'timer-id': timer.get('id'),
-        'stop-time': moment().unix()
+        'timer-id': timer.get('id')
       }));
     }
   }
@@ -125,7 +121,6 @@ export function updateTimer(timer, duration, notes) {
       connection.send(JSON.stringify({
         command: 'update-timer',
         'timer-id': timer.get('id'),
-        'current-time': moment().unix(),
         duration,
         notes
       }));
