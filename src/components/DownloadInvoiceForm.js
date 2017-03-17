@@ -178,7 +178,7 @@ export default class DownloadInvoiceForm extends Component {
                  value={this.state.taxName1}/>
         </label>
         <label>
-          Pecentage
+          Percentage
           <input type="number" step="0.01"
                  onChange={this.handleNamedStateChange}
                  name="taxPercent1"
@@ -193,7 +193,7 @@ export default class DownloadInvoiceForm extends Component {
                  value={this.state.taxName2}/>
         </label>
         <label>
-          Pecentage
+          Percentage
           <input type="number" step="0.01"
                  onChange={this.handleNamedStateChange}
                  name="taxPercent2"

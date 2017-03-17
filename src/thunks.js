@@ -278,7 +278,7 @@ export function downloadInvoice(downloadInvoiceParams) {
               client: downloadInvoiceParams.client,
               address: downloadInvoiceParams.address,
               notes: downloadInvoiceParams.notes,
-              'user-id->rate': downloadInvoiceParams.userIdToRate,
+              'user-rates': downloadInvoiceParams.userIdToRate,
               'tax-rates': downloadInvoiceParams.taxes,
               currency: downloadInvoiceParams.currency,
               'utc-offset': downloadInvoiceParams.start.utcOffset()
