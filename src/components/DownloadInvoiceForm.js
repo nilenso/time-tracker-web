@@ -13,7 +13,7 @@ export default class DownloadInvoiceForm extends Component {
       client: props.clients.first(),
       address: '',
       notes: '',
-      userRates: this.userRatesFromProps(props),
+      usersWithRates: this.userRatesFromProps(props),
       currency: 'inr',
       showTaxes: false,
       taxName1: '',
@@ -31,7 +31,7 @@ export default class DownloadInvoiceForm extends Component {
 
   componentWillReceiveProps(newProps) {
     this.setState({client: newProps.clients.first()});
-    this.setState({userRates: this.userRatesFromProps(newProps)});
+    this.setState({usersWithRates: this.userRatesFromProps(newProps)});
   }
 
   handleStartChange = (newStart) => {
@@ -71,15 +71,15 @@ export default class DownloadInvoiceForm extends Component {
   handleRatesChange = (event, id) => {
     const nextRate = parseInt(event.target.value, 10);
     this.setState({
-     userRates: this.state.userRates.setIn([id, 'rate'], nextRate || 0)
+     usersWithRates: this.state.usersWithRates.setIn([id, 'rate'], nextRate || 0)
    });
   }
 
   handleSubmit = (event) => {
     event.preventDefault();
-    const { start, end, client, address, notes, userRates, currency }
+    const { start, end, client, address, notes, usersWithRates, currency }
       = this.state;
-    const userIdToRate = userRates.valueSeq()
+    const userRates = usersWithRates.valueSeq()
       .map(user => {
         return Immutable.Map({ 'user-id': user.get('id'), 'rate': user.get('rate') });
       })
@@ -89,7 +89,7 @@ export default class DownloadInvoiceForm extends Component {
       { 'tax-name': this.state.taxName2, 'tax-percentage': parseFloat(this.state.taxPercent2) }
      ] : null;
     this.props.onSubmit({start, end, client, address,
-      notes, userIdToRate, currency, taxes});
+      notes, userRates, currency, taxes});
   }
 
   render() {
@@ -101,7 +101,7 @@ export default class DownloadInvoiceForm extends Component {
       );
     });
 
-    const usersRates = this.state.userRates.valueSeq().map((user, index) => {
+    const userRatesForm = this.state.usersWithRates.valueSeq().map((user, index) => {
       return (
         <span key={index}>
           <label>{user.get('name')}</label>
@@ -159,7 +159,7 @@ export default class DownloadInvoiceForm extends Component {
         </select>
 
         <label>{"User Rates"}</label>
-        {usersRates}
+        {userRatesForm}
 
         <label>
           <input type="checkbox"
