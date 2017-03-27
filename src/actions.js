@@ -1,6 +1,30 @@
 
 // Websockets actions
 
+function _createActionTypeMap(actionTypes) {
+  return _.reduce(actionTypes, (actionTypeMap, actionType) -> _.set(actionTypeMap, actionType), {});
+}
+
+let noopActionNames = [
+  'WS_CONNECTION_FAILED',
+  'WS_HANDSHAKE_FAILED',
+  'MAKE_TIMERS_STALE',
+  'REQUEST_TIMERS'
+];
+
+export const ActionTypes = _createActionTypeMap(concat(noopActionNames));
+
+function _noopAction(type) {
+  return {
+    type: type
+  };
+}
+
+let noopActions = _.reduce(noopActionNames, (actions, action) -> _.set(actions, action, _noopAction(action)));
+let otherActions = {};
+
+export const Action = _.merge(noopActions, otherActions);
+
 export const WS_CONNECTION_FAILED = 'WS_CONNECTION_FAILED';
 export function wsConnectionFailed() {
   return {
