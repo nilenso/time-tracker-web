@@ -4,10 +4,11 @@ import { connect } from 'react-redux';
 import { downloadInvoice } from '../thunks';
 import DownloadInvoiceForm from '../components/DownloadInvoiceForm';
 
-function InvoicesPage({clients, onDownloadClick}) {
+function InvoicesPage({clients, users, onDownloadClick}) {
   return (
     <DownloadInvoiceForm onSubmit={onDownloadClick}
-                         clients={clients}/>
+                         clients={clients}
+                         users={users}/>
   );
 }
 
@@ -18,6 +19,7 @@ function clientFromProject(project) {
 
 function mapStateToProps(state) {
   const projects = state.getIn(['entities', 'projects']);
+  const users = state.getIn(['entities', 'users']);
   if (!projects) {
     return {
       clients: Immutable.List([])
@@ -29,16 +31,18 @@ function mapStateToProps(state) {
                           .toList()
                           .sort();
   return {
-    clients: clients
+    clients: clients,
+    users: users
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    onDownloadClick: (start, end, client) => {
-      dispatch(downloadInvoice(start.clone().startOf('day'),
-                               end.clone().startOf('day').add(1, 'days'),
-                               client));
+    onDownloadClick: (downloadInvoiceParams) => {
+      dispatch(downloadInvoice(Object.assign(downloadInvoiceParams, {
+        start: downloadInvoiceParams.start.clone().startOf('day'),
+        end: downloadInvoiceParams.end.clone().startOf('day').add(1, 'days')
+      })));
     }
   };
 }

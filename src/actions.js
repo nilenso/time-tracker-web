@@ -80,6 +80,14 @@ export function receiveLocalUserData(userData) {
   };
 }
 
+export const RECEIVE_ALL_USERS = 'RECEIVE_ALL_USERS';
+export function receiveAllUsers(usersData) {
+  return {
+    type: RECEIVE_ALL_USERS,
+    users: usersData
+  }
+}
+
 // Project actions
 
 export const PROJECT_CREATED = 'PROJECT_CREATED';

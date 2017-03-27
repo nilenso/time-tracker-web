@@ -16,7 +16,8 @@ import {
   receiveTimers,
   startInvoiceDownload,
   finishInvoiceDownload,
-  invoiceDownloadFailed
+  invoiceDownloadFailed,
+  receiveAllUsers
 } from './actions';
 
 // Gets the auth token from the Redux store.
@@ -223,22 +224,43 @@ export function fetchLocalUserData() {
   }
 }
 
-function download(filename, text) {
-  let pom = document.createElement('a');
-  pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-  pom.setAttribute('download', filename);
-
-  if (document.createEvent) {
-    let event = document.createEvent('MouseEvents');
-    event.initEvent('click', true, true);
-    pom.dispatchEvent(event);
-  }
-  else {
-    pom.click();
+export function fetchAllUsers() {
+  return (dispatch) => {
+    const authToken = getAuthToken();
+    if (!authToken) {
+      return;
+    }
+    const url = '/api/users/';
+    return Request
+            .get(url)
+            .set('Authorization', 'Bearer ' + authToken)
+            .then((response) => {
+              const normalizedUsers = normalizeArray(response.body);
+              dispatch(receiveAllUsers(normalizedUsers));
+            })
   }
 }
 
-export function downloadInvoice(start, end, client) {
+function download(filename, blob) {
+  let reader = new window.FileReader();
+  reader.onloadend = () => {
+    let pom = document.createElement('a');
+    pom.setAttribute('href', reader.result);
+    pom.setAttribute('download', filename);
+    pom.setAttribute('target', '_new');
+    if (document.createEvent) {
+      let event = document.createEvent('MouseEvents');
+      event.initEvent('click', true, true);
+      pom.dispatchEvent(event);
+    }
+    else {
+      pom.click();
+    }
+  }
+  reader.readAsDataURL(blob);
+}
+
+export function downloadInvoice(downloadInvoiceParams) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
@@ -247,15 +269,22 @@ export function downloadInvoice(start, end, client) {
     const url = '/download/invoice/';
     dispatch(startInvoiceDownload());
     return Request
-            .get(url)
+            .post(url)
+            .responseType('blob')
             .set('Authorization', 'Bearer ' + authToken)
-            .query({
-              start: start.unix(),
-              end: end.unix(),
-              client: client
+            .send({
+              start: downloadInvoiceParams.start.unix(),
+              end: downloadInvoiceParams.end.unix(),
+              client: downloadInvoiceParams.client,
+              address: downloadInvoiceParams.address,
+              notes: downloadInvoiceParams.notes,
+              'user-rates': downloadInvoiceParams.userRates,
+              'tax-rates': downloadInvoiceParams.taxes,
+              currency: downloadInvoiceParams.currency,
+              'utc-offset': downloadInvoiceParams.start.utcOffset()
             })
             .then((response) => {
-              download('invoice.csv', response.text);
+              download('invoice.pdf', response.xhr.response);
               dispatch(finishInvoiceDownload());
             })
             .catch(() => dispatch(invoiceDownloadFailed()));
