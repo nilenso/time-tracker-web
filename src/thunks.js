@@ -39,36 +39,42 @@ export function makeWSConnection() {
   return (dispatch) => {
     const authToken = getAuthToken();
     const url = 'ws://' + window.location.host + '/api/timers/ws-connect/';
-    let wsConnection
-      = new WebSocket(url);
+    let intervalId;
+    let wsConnection = new WebSocket(url);
+
     wsConnection.onopen = (e) => {
       wsConnection.send(JSON.stringify({
         command: 'authenticate',
         token: authToken
       }));
     };
+
     wsConnection.onerror = (e) => {
       dispatch(wsConnectionFailed());
     };
+
     wsConnection.onmessage = (e) => {
       let message = JSON.parse(e.data);
       if (message['auth-status'] === 'success') {
-        const intervalId = window.setInterval(() => sendPing(wsConnection),
-                                              10000);
+        dispatch(wsReceivedMessage(JSON.parse(e.data)));
+        dispatch(wsConnectionReady(wsConnection));
+        // Begin ping-pong at 10s intervals.
+        intervalId = window.setInterval(() => sendPing(wsConnection), 10000);
+        // Redefine onmessage to stop checking authentication status.
         wsConnection.onmessage = (e) => {
           dispatch(wsReceivedMessage(JSON.parse(e.data)));
-        };
-
-        wsConnection.onclose = (e) => {
-          window.clearInterval(intervalId);
-        };
-
-        dispatch(wsConnectionReady(wsConnection));
+        }
       }
       else {
         dispatch(wsHandshakeFailed());
       }
-    }
+    };
+
+    wsConnection.onclose = (e) => {
+      window.clearInterval(intervalId);
+      // Try reconnecting after 3s.
+      setTimeout(() => dispatch(makeWSConnection(authToken)), 3000)
+    };
   };
 }
 

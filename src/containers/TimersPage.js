@@ -9,6 +9,7 @@ import { fetchTimersBetween,
         } from '../thunks';
 import TimersList from '../components/TimersList';
 import DatePicker from '../components/DatePicker';
+import { Notification } from 'react-notification';
 
 class TimersPage extends Component {
   constructor(props) {
@@ -70,7 +71,6 @@ class TimersPage extends Component {
     const todaysTimers = this.props.entities
                                    .get('timers')
                                    .filter(wasCreatedToday);
-
     return (
       <div>
         <DatePicker defaultMoment={this.state.displayDate}
@@ -82,6 +82,12 @@ class TimersPage extends Component {
                     onCreateClick={this.onCreateClick}
                     onTimerEdit={this.onTimerEdit}
           />
+        <Notification
+          isActive={this.props.isWsConnectionDead}
+          dismissAfter={false}
+          message="Trying to reconnect..."
+          title="Connection lost." 
+        />
       </div>
     );
   }
@@ -90,9 +96,11 @@ class TimersPage extends Component {
 function mapStateToProps(state) {
   const timersState = state.get('timers');
   const googleUser = state.getIn(['userData', 'googleUser']);
+  const isWsConnectionDead = state.get('wsConnection').get('connection') !== null && state.get('wsConnection').get('connection').readyState === 3;
   const isUserFetching = (googleUser === null);
   return {
     entities: state.get('entities'),
+    isWsConnectionDead: isWsConnectionDead,
     // TODO: Use this property to disable buttons.
     isFetching: (timersState.get('isFetching') || isUserFetching)
   };
