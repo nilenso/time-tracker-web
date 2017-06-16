@@ -98,6 +98,13 @@ export function projectCreated(project) {
   };
 }
 
+export const PROJECT_CREATION_FAILED = 'PROJECT_CREATION_FAILED';
+export function projectCreationFailed() {
+  return {
+    type: PROJECT_CREATION_FAILED
+  };
+}
+
 export const RECEIVE_PROJECTS = 'RECEIVE_PROJECTS';
 export function receiveProjects(projects) {
   return {
