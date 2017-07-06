@@ -42,32 +42,41 @@ export function makeWSConnection() {
     let intervalId;
     let wsConnection = new WebSocket(url);
 
-    wsConnection.onopen = (e) => {
-      wsConnection.send(JSON.stringify({
-        command: 'authenticate',
-        token: authToken
-      }));
-    };
-
     wsConnection.onerror = (e) => {
       dispatch(wsConnectionFailed());
     };
 
+    /*
+    Once a connection is opened, we wait for a "Ready" frame from the Server.
+    This is to avoide sending an Auth message while the server still have not 
+    had its on-receive callback hooked up.
+    Reference:- ttps://github.com/http-kit/http-kit/issues/318 
+    */
     wsConnection.onmessage = (e) => {
       let message = JSON.parse(e.data);
-      if (message['auth-status'] === 'success') {
-        dispatch(wsReceivedMessage(JSON.parse(e.data)));
-        dispatch(wsConnectionReady(wsConnection));
-        // Begin ping-pong at 10s intervals.
-        intervalId = window.setInterval(() => sendPing(wsConnection), 10000);
-        // Redefine onmessage to stop checking authentication status.
-        wsConnection.onmessage = (e) => {
-          dispatch(wsReceivedMessage(JSON.parse(e.data)));
-        }
+
+      if (message.type === 'ready') {
+          wsConnection.send(JSON.stringify({
+          command: 'authenticate',
+          token: authToken
+        })); 
       }
       else {
-        dispatch(wsHandshakeFailed());
+        if (message['auth-status'] === 'success') {
+          dispatch(wsReceivedMessage(JSON.parse(e.data)));
+          dispatch(wsConnectionReady(wsConnection));
+          // Begin ping-pong at 10s intervals.
+          intervalId = window.setInterval(() => sendPing(wsConnection), 10000);
+          // Redefine onmessage to stop checking authentication status.
+          wsConnection.onmessage = (e) => {
+            dispatch(wsReceivedMessage(JSON.parse(e.data)));
+          }
+        }
+        else {
+          dispatch(wsHandshakeFailed());
+        }
       }
+      
     };
 
     wsConnection.onclose = (e) => {
