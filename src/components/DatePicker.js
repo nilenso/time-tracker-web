@@ -25,6 +25,11 @@ export default class DatePicker extends Component {
 
   handleChange(event) {
     this.setState({displayValue: event.target.value});
+    const newMoment = moment(event.target.value, 'DD-MM-YYYY', true);
+    if (newMoment.isValid()) {
+      this.props.onChangeDate(newMoment);
+    }
+    event.preventDefault();
   }
 
   handleOnSetDate(event) {
@@ -64,9 +69,6 @@ export default class DatePicker extends Component {
         </button>
         <button type="button" onClick={this.handleIncreaseDate}>
           {"Forward>"}
-        </button>
-        <button type="button" onClick={this.handleOnSetDate}>
-          {"Change date"}
         </button>
       </div>
     );
