@@ -81,7 +81,7 @@ export function makeWSConnection() {
         }
       }
       else {
-        wsConnection.close();
+        dispatch(wsHandshakeFailed());
       }      
     };
 
