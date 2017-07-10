@@ -10,6 +10,7 @@ import {
   requestTimers,
   requestTimersFailed,
   projectCreated,
+  projectCreationFailed,
   receiveLocalUserData,
   receiveProjects,
   receiveTimers,
@@ -209,7 +210,7 @@ export function createProject(projectName) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
-      return;
+      return;     
     }
     const url = '/api/projects/';
     return Request
@@ -219,6 +220,9 @@ export function createProject(projectName) {
             .then((response) => {
               const newProject = response.body;
               dispatch(projectCreated(newProject));
+            })
+            .catch(() => {
+              dispatch(projectCreationFailed());
             });
   };
 }

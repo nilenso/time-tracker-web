@@ -166,7 +166,7 @@ module.exports = {
     // In development, this will be an empty string.
     new InterpolateHtmlPlugin({
       PUBLIC_URL: publicUrl,
-      GOOGLE_CLIENT_ID: '128416141127-mp9b2fsq6e8bt1r3lva6cot1kdqnlof9.apps.googleusercontent.com'
+      GOOGLE_CLIENT_ID: '239281641436-7rh55qnfcnsppimg6en0akkl4p7ebsve.apps.googleusercontent.com'
     }),
     // Generates an `index.html` file with the <script> injected.
     new HtmlWebpackPlugin({
