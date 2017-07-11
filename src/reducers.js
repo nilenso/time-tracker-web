@@ -122,8 +122,18 @@ function statusBarDataReducer(state = Immutable.Map({
       return state.merge({text: 'project successfully created.',
                           timeoutSeconds: 3});
   
-   case ActionTypes.PROJECT_CREATION_FAILED:
+    case ActionTypes.PROJECT_CREATION_FAILED:
       return state.merge({text: 'Project creation failed! Did you forget the Project name?',
+                          timeoutSeconds: 3});
+
+    case ActionTypes.FINISH_INVOICE_DOWNLOAD_AFTER_SAVE:
+      return state.merge({text: 'invoice successfully created.',
+                          timeoutSeconds: 3});
+
+    case ActionTypes.INVOICE_DOWNLOAD_FAILED_AFTER_SAVE:
+      return state.merge({text: 'invoice creation failed :(. \
+                                 Please check if 1. If you have enetered all necessary data \
+                                 and 2. you have any entries between the given start and end dates',
                           timeoutSeconds: 3});
 
     case ActionTypes.INVOICE_DOWNLOAD_FAILED:

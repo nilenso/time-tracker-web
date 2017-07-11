@@ -135,6 +135,21 @@ export function invoiceDownloadFailed() {
   };
 }
 
+// Invoice create actions
+export const FINISH_INVOICE_DOWNLOAD_AFTER_SAVE = 'FINISH_INVOICE_DOWNLOAD_AFTER_SAVE';
+export function finishInvoiceDownloadAfterSave() {
+  return {
+    type: FINISH_INVOICE_DOWNLOAD_AFTER_SAVE
+  };
+}
+
+export const INVOICE_DOWNLOAD_FAILED_AFTER_SAVE = 'INVOICE_DOWNLOAD_FAILED_AFTER_SAVE';
+export function invoiceDownloadFailedAfterSave() {
+  return {
+    type: INVOICE_DOWNLOAD_FAILED_AFTER_SAVE
+  };
+}
+
 // Status bar actions
 
 export const CLEAR_STATUS_BAR = 'CLEAR_STATUS_BAR';

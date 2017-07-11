@@ -32,7 +32,7 @@ function App(props) {
               <li>time tracker</li>
               <li><Link to="/about">about</Link></li>
               <li><Link to="/timers">timers</Link></li>
-              <li><Link to="/invoices">invoices</Link></li>
+              <li><Link to="/invoice">invoice</Link></li>
               {adminLink}
             </ul>
           </nav>

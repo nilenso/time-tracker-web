@@ -24,9 +24,11 @@ export default class DatePicker extends Component {
   }
 
   handleChange(event) {
-    this.setState({displayValue: event.target.value});
-    const newMoment = moment(event.target.value, 'DD-MM-YYYY', true);
+    const date = event.target.value
+    this.setState({displayValue: date});
+    const newMoment = moment(date, 'DD-MM-YYYY', true);
     if (newMoment.isValid()) {
+      this.setState({displayValue: newMoment.format('DD-MM-YYYY')});
       this.props.onChangeDate(newMoment);
     }
     event.preventDefault();
