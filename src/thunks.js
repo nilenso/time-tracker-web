@@ -282,44 +282,13 @@ function download(filename, blob) {
   reader.readAsDataURL(blob);
 }
 
-export function downloadInvoice(downloadInvoiceParams) {
-  return (dispatch) => {
-    const authToken = getAuthToken();
-    if (!authToken) {
-      return;
-    }
-    const url = '/download/invoice/';
-    dispatch(startInvoiceDownload());
-    return Request
-            .post(url)
-            .responseType('blob')
-            .set('Authorization', 'Bearer ' + authToken)
-            .send({
-              start: downloadInvoiceParams.start.unix(),
-              end: downloadInvoiceParams.end.unix(),
-              client: downloadInvoiceParams.client,
-              address: downloadInvoiceParams.address,
-              notes: downloadInvoiceParams.notes,
-              'user-rates': downloadInvoiceParams.userRates,
-              'tax-rates': downloadInvoiceParams.taxes,
-              currency: downloadInvoiceParams.currency,
-              'utc-offset': downloadInvoiceParams.start.utcOffset()
-            })
-            .then((response) => {
-              download('invoice.pdf', response.xhr.response);
-              dispatch(finishInvoiceDownload());
-            })
-            .catch(() => dispatch(invoiceDownloadFailed()));
-  }
-}
-
 export function createInvoice(createInvoiceParams) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
       return;
     }
-    const url = '/download/create/';
+    const url = '/api/invoices/';
     dispatch(startInvoiceDownload());
     return Request
             .post(url)
