@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { createInvoice } from '../thunks';
 import  CreateInvoiceForm from '../components/CreateInvoiceForm';
 
-function InvoicesPage({clients, users, onCreateClick}) {
+function InvoicePage({clients, users, onCreateClick}) {
   return (
     <CreateInvoiceForm onSubmit={onCreateClick}
                          clients={clients}
@@ -48,4 +48,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps,
-                       mapDispatchToProps)(InvoicesPage);
+                       mapDispatchToProps)(InvoicePage);
