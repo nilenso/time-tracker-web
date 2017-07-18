@@ -3,7 +3,7 @@ import DatePicker from './DatePicker';
 import moment from 'moment';
 import Immutable from 'immutable';
 
-export default class DownloadInvoiceForm extends Component {
+export default class CreateInvoiceForm extends Component {
   constructor(props) {
     super(props);
 
@@ -200,7 +200,7 @@ export default class DownloadInvoiceForm extends Component {
                  value={this.state.taxPercent2}/>
         </label>
 
-        <input type="submit" value="Download invoice" disabled={buttonDisabled}/>
+        <input type="submit" value="Create invoice" disabled={buttonDisabled}/>
       </form>
     );
   }

@@ -1,12 +1,12 @@
 import React from 'react';
 import Immutable from 'immutable';
 import { connect } from 'react-redux';
-import { downloadInvoice } from '../thunks';
-import DownloadInvoiceForm from '../components/DownloadInvoiceForm';
+import { createInvoice } from '../thunks';
+import  CreateInvoiceForm from '../components/CreateInvoiceForm';
 
-function InvoicesPage({clients, users, onDownloadClick}) {
+function InvoicePage({clients, users, onCreateClick}) {
   return (
-    <DownloadInvoiceForm onSubmit={onDownloadClick}
+    <CreateInvoiceForm onSubmit={onCreateClick}
                          clients={clients}
                          users={users}/>
   );
@@ -38,14 +38,14 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    onDownloadClick: (downloadInvoiceParams) => {
-      dispatch(downloadInvoice(Object.assign(downloadInvoiceParams, {
-        start: downloadInvoiceParams.start.clone().startOf('day'),
-        end: downloadInvoiceParams.end.clone().startOf('day').add(1, 'days')
+    onCreateClick: (createInvoiceParams) => {
+      dispatch(createInvoice(Object.assign(createInvoiceParams, {
+        start: createInvoiceParams.start.clone().startOf('day'),
+        end: createInvoiceParams.end.clone().startOf('day').add(1, 'days')
       })));
     }
   };
 }
 
 export default connect(mapStateToProps,
-                       mapDispatchToProps)(InvoicesPage);
+                       mapDispatchToProps)(InvoicePage);

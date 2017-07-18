@@ -17,6 +17,8 @@ import {
   startInvoiceDownload,
   finishInvoiceDownload,
   invoiceDownloadFailed,
+  finishInvoiceDownloadAfterSave,
+  invoiceDownloadFailedAfterSave,
   receiveAllUsers
 } from './actions';
 
@@ -280,33 +282,33 @@ function download(filename, blob) {
   reader.readAsDataURL(blob);
 }
 
-export function downloadInvoice(downloadInvoiceParams) {
+export function createInvoice(createInvoiceParams) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
       return;
     }
-    const url = '/download/invoice/';
+    const url = '/api/invoices/';
     dispatch(startInvoiceDownload());
     return Request
             .post(url)
             .responseType('blob')
             .set('Authorization', 'Bearer ' + authToken)
             .send({
-              start: downloadInvoiceParams.start.unix(),
-              end: downloadInvoiceParams.end.unix(),
-              client: downloadInvoiceParams.client,
-              address: downloadInvoiceParams.address,
-              notes: downloadInvoiceParams.notes,
-              'user-rates': downloadInvoiceParams.userRates,
-              'tax-rates': downloadInvoiceParams.taxes,
-              currency: downloadInvoiceParams.currency,
-              'utc-offset': downloadInvoiceParams.start.utcOffset()
+              start: createInvoiceParams.start.unix(),
+              end: createInvoiceParams.end.unix(),
+              client: createInvoiceParams.client,
+              address: createInvoiceParams.address,
+              notes: createInvoiceParams.notes,
+              'user-rates': createInvoiceParams.userRates,
+              'tax-rates': createInvoiceParams.taxes,
+              currency: createInvoiceParams.currency,
+              'utc-offset': createInvoiceParams.start.utcOffset()
             })
             .then((response) => {
               download('invoice.pdf', response.xhr.response);
-              dispatch(finishInvoiceDownload());
+              dispatch(finishInvoiceDownloadAfterSave());
             })
-            .catch(() => dispatch(invoiceDownloadFailed()));
-  }
+            .catch(() => dispatch(invoiceDownloadFailedAfterSave()));
+  };
 }
