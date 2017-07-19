@@ -15,8 +15,6 @@ import {
   receiveProjects,
   receiveTimers,
   startInvoiceDownload,
-  finishInvoiceDownload,
-  invoiceDownloadFailed,
   finishInvoiceDownloadAfterSave,
   invoiceDownloadFailedAfterSave,
   receiveAllUsers,
