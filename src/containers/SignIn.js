@@ -5,7 +5,8 @@ import {
   makeWSConnection,
   fetchLocalUserData,
   fetchProjects,
-  fetchAllUsers
+  fetchAllUsers,
+  fetchAllInvoices
  } from '../thunks';
 
 function mapStateToProps(state) {
@@ -31,6 +32,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(fetchLocalUserData(token));
       dispatch(fetchProjects());
       dispatch(fetchAllUsers());
+      dispatch(fetchAllInvoices());
     }
   }
 }

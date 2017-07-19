@@ -33,6 +33,7 @@ function App(props) {
               <li><Link to="/about">about</Link></li>
               <li><Link to="/timers">timers</Link></li>
               <li><Link to="/invoice">invoice</Link></li>
+              <li><Link to="/invoices">Saved invoices</Link></li>
               {adminLink}
             </ul>
           </nav>
