@@ -7,9 +7,7 @@ class InvoicesPage extends Component {
     const savedInvoices = this.props.entities
                                    .get('invoices')
     return (
-      <div>
-        <InvoicesTable invoices={savedInvoices}/>
-      </div>
+      <InvoicesTable invoices={savedInvoices}/>
     );
   }  
 }
