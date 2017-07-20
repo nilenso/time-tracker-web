@@ -5,7 +5,8 @@ export default class InvoicesTable extends Component {
   render() {
     const invoiceRows = this.props.invoices
                             .valueSeq()
-                            .sortBy(invoice => -invoice.get('id'));
+                            .sortBy(invoice => invoice.get('id'))
+                            .reverse();
     const titles = ['Id', 'Client', 'Address', 'Notes', 'Amount', 'Currency', 'From', 'To', 'Status']
     const tableStyle = {
        "marginLeft": "5px"
