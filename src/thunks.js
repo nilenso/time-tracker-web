@@ -15,11 +15,10 @@ import {
   receiveProjects,
   receiveTimers,
   startInvoiceDownload,
-  finishInvoiceDownload,
-  invoiceDownloadFailed,
   finishInvoiceDownloadAfterSave,
   invoiceDownloadFailedAfterSave,
-  receiveAllUsers
+  receiveAllUsers,
+  receiveAllInvoices
 } from './actions';
 
 // Gets the auth token from the Redux store.
@@ -311,4 +310,21 @@ export function createInvoice(createInvoiceParams) {
             })
             .catch(() => dispatch(invoiceDownloadFailedAfterSave()));
   };
+}
+
+export function fetchAllInvoices() {
+  return (dispatch) => {
+    const authToken = getAuthToken();
+    if (!authToken) {
+      return;
+    }
+    const url = '/api/invoices/';
+    return Request
+            .get(url)
+            .set('Authorization', 'Bearer ' + authToken)
+            .then((response) => {
+              const normalizedInvoices = normalizeArray(response.body);
+              dispatch(receiveAllInvoices(normalizedInvoices));
+            })
+  }
 }

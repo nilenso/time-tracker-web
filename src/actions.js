@@ -150,6 +150,14 @@ export function invoiceDownloadFailedAfterSave() {
   };
 }
 
+export const RECEIVE_ALL_INVOICES = 'RECEIVE_ALL_INVOICES';
+export function receiveAllInvoices(invoicesData) {
+  return {
+    type: RECEIVE_ALL_INVOICES,
+    invoices: invoicesData
+  }
+}
+
 // Status bar actions
 
 export const CLEAR_STATUS_BAR = 'CLEAR_STATUS_BAR';

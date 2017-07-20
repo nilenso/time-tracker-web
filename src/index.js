@@ -5,6 +5,7 @@ import About from './components/About';
 import AdminPage from './containers/AdminPage';
 import TimersPage from './containers/TimersPage';
 import InvoicePage from './containers/InvoicePage';
+import InvoicesPage from './containers/InvoicesPage';
 import { Router, Route, IndexRoute, browserHistory, Redirect } from 'react-router';
 import { Provider } from 'react-redux';
 import store from './store';
@@ -18,6 +19,7 @@ ReactDOM.render(
         <Route path="timers" component={TimersPage} />
         <Route path="admin" component={AdminPage} />
         <Route path="invoice" component={InvoicePage} />
+        <Route path="invoices" component={InvoicesPage} />
       </Route>
       <Redirect from="*" to="/"/>
     </Router>

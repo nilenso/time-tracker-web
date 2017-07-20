@@ -4,7 +4,8 @@ import * as ActionTypes from './actions';
 function entitiesReducer(state = Immutable.fromJS({
   timers: {},
   projects: {},
-  users: {}
+  users: {},
+  invoices: {}
 }), action) {
   switch (action.type) {
     case ActionTypes.RECEIVE_TIMERS_PROJECTS:
@@ -32,6 +33,9 @@ function entitiesReducer(state = Immutable.fromJS({
 
     case ActionTypes.RECEIVE_ALL_USERS:
       return state.mergeIn(['users'], action.users);
+    
+    case ActionTypes.RECEIVE_ALL_INVOICES:
+      return state.mergeIn(['invoices'], action.invoices);
 
     default:
       return state;
