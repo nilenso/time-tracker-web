@@ -4,8 +4,7 @@ import  InvoicesTable from '../components/InvoicesTable';
 
 class InvoicesPage extends Component {
   render() {
-    const savedInvoices = this.props.entities
-                                   .get('invoices')
+    const savedInvoices = this.props.entities.get('invoices')
     return (
       <InvoicesTable invoices={savedInvoices}/>
     );

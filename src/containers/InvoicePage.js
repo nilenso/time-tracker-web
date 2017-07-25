@@ -1,51 +1,22 @@
-import React from 'react';
-import Immutable from 'immutable';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { createInvoice } from '../thunks';
-import  CreateInvoiceForm from '../components/CreateInvoiceForm';
+import InvoiceTable from '../components/InvoiceTable';
 
-function InvoicePage({clients, users, onCreateClick}) {
-  return (
-    <CreateInvoiceForm onSubmit={onCreateClick}
-                         clients={clients}
-                         users={users}/>
-  );
-}
-
-function clientFromProject(project) {
-  const name = project.get('name');
-  return name.split('|', 2)[0];
+class InvoicePage extends Component {
+  render() {
+    const savedInvoice = this.props.entities
+      .get('invoices')
+      .get(parseInt(this.props.params.invoiceId, 10));
+    return (
+      <InvoiceTable invoice={savedInvoice} />
+    );
+  }
 }
 
 function mapStateToProps(state) {
-  const projects = state.getIn(['entities', 'projects']);
-  const users = state.getIn(['entities', 'users']);
-  if (!projects) {
-    return {
-      clients: Immutable.List([])
-    };
-  }
-  const clients = projects.valueSeq()
-                          .map(clientFromProject)
-                          .toSet()
-                          .toList()
-                          .sort();
   return {
-    clients: clients,
-    users: users
+    entities: state.get('entities')
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    onCreateClick: (createInvoiceParams) => {
-      dispatch(createInvoice(Object.assign(createInvoiceParams, {
-        start: createInvoiceParams.start.clone().startOf('day'),
-        end: createInvoiceParams.end.clone().startOf('day').add(1, 'days')
-      })));
-    }
-  };
-}
-
-export default connect(mapStateToProps,
-                       mapDispatchToProps)(InvoicePage);
+export default connect(mapStateToProps)(InvoicePage);

@@ -18,7 +18,7 @@ import {
   finishInvoiceDownloadAfterSave,
   invoiceDownloadFailedAfterSave,
   receiveAllUsers,
-  receiveAllInvoices
+  receiveInvoices
 } from './actions';
 
 // Gets the auth token from the Redux store.
@@ -59,10 +59,10 @@ export function makeWSConnection() {
       let message = JSON.parse(e.data);
 
       if (message.type === 'ready') {
-          wsConnection.send(JSON.stringify({
+        wsConnection.send(JSON.stringify({
           command: 'authenticate',
           token: authToken
-        })); 
+        }));
 
         // Redefine onmessage to stop checking for "Ready" frame.
         wsConnection.onmessage = (e) => {
@@ -84,7 +84,7 @@ export function makeWSConnection() {
       }
       else {
         dispatch(wsHandshakeFailed());
-      }      
+      }
     };
 
     wsConnection.onclose = (e) => {
@@ -154,18 +154,18 @@ export function updateTimer(timer, duration, notes) {
 function getAllProjects(authToken) {
   const url = '/api/projects/';
   return Request
-          .get(url)
-          .set('Authorization', 'Bearer ' + authToken)
-          .then((response) => {
-            return response.body;
-          });
+    .get(url)
+    .set('Authorization', 'Bearer ' + authToken)
+    .then((response) => {
+      return response.body;
+    });
 }
 
 function normalizeArray(items) {
   return Immutable.fromJS(items)
-                  .reduce((normalMap, item) => {
-                    return normalMap.set(item.get('id'), item);
-                  }, Immutable.Map({}));
+    .reduce((normalMap, item) => {
+      return normalMap.set(item.get('id'), item);
+    }, Immutable.Map({}));
 }
 
 export function fetchTimersBetween(start, end) {
@@ -177,19 +177,19 @@ export function fetchTimersBetween(start, end) {
     dispatch(requestTimers());
     const url = '/api/timers/';
     return Request
-            .get(url)
-            .set('Authorization', 'Bearer ' + authToken)
-            .query({
-              start: start.unix(),
-              end: end.unix()
-            })
-            .then((response) => {
-              const timers = normalizeArray(response.body);
-              dispatch(receiveTimers(timers));
-            })
-            .catch(() => {
-              dispatch(requestTimersFailed());
-            });
+      .get(url)
+      .set('Authorization', 'Bearer ' + authToken)
+      .query({
+        start: start.unix(),
+        end: end.unix()
+      })
+      .then((response) => {
+        const timers = normalizeArray(response.body);
+        dispatch(receiveTimers(timers));
+      })
+      .catch(() => {
+        dispatch(requestTimersFailed());
+      });
   }
 }
 
@@ -200,10 +200,10 @@ export function fetchProjects() {
       return;
     }
     return getAllProjects(authToken)
-            .then((projects) => {
-              const normalizedProjects = normalizeArray(projects);
-              dispatch(receiveProjects(normalizedProjects));
-            });
+      .then((projects) => {
+        const normalizedProjects = normalizeArray(projects);
+        dispatch(receiveProjects(normalizedProjects));
+      });
   }
 }
 
@@ -211,20 +211,20 @@ export function createProject(projectName) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
-      return;     
+      return;
     }
     const url = '/api/projects/';
     return Request
-            .post(url)
-            .send({name: projectName})
-            .set('Authorization', 'Bearer ' + authToken)
-            .then((response) => {
-              const newProject = response.body;
-              dispatch(projectCreated(newProject));
-            })
-            .catch(() => {
-              dispatch(projectCreationFailed());
-            });
+      .post(url)
+      .send({ name: projectName })
+      .set('Authorization', 'Bearer ' + authToken)
+      .then((response) => {
+        const newProject = response.body;
+        dispatch(projectCreated(newProject));
+      })
+      .catch(() => {
+        dispatch(projectCreationFailed());
+      });
   };
 }
 
@@ -236,12 +236,12 @@ export function fetchLocalUserData() {
     }
     const url = '/api/users/me/';
     return Request
-            .get(url)
-            .set('Authorization', 'Bearer ' + authToken)
-            .then((response) => {
-              const userData = response.body;
-              dispatch(receiveLocalUserData(userData));
-            });
+      .get(url)
+      .set('Authorization', 'Bearer ' + authToken)
+      .then((response) => {
+        const userData = response.body;
+        dispatch(receiveLocalUserData(userData));
+      });
   }
 }
 
@@ -253,12 +253,12 @@ export function fetchAllUsers() {
     }
     const url = '/api/users/';
     return Request
-            .get(url)
-            .set('Authorization', 'Bearer ' + authToken)
-            .then((response) => {
-              const normalizedUsers = normalizeArray(response.body);
-              dispatch(receiveAllUsers(normalizedUsers));
-            })
+      .get(url)
+      .set('Authorization', 'Bearer ' + authToken)
+      .then((response) => {
+        const normalizedUsers = normalizeArray(response.body);
+        dispatch(receiveAllUsers(normalizedUsers));
+      })
   }
 }
 
@@ -290,25 +290,25 @@ export function createInvoice(createInvoiceParams) {
     const url = '/api/invoices/';
     dispatch(startInvoiceDownload());
     return Request
-            .post(url)
-            .responseType('blob')
-            .set('Authorization', 'Bearer ' + authToken)
-            .send({
-              start: createInvoiceParams.start.unix(),
-              end: createInvoiceParams.end.unix(),
-              client: createInvoiceParams.client,
-              address: createInvoiceParams.address,
-              notes: createInvoiceParams.notes,
-              'user-rates': createInvoiceParams.userRates,
-              'tax-rates': createInvoiceParams.taxes,
-              currency: createInvoiceParams.currency,
-              'utc-offset': createInvoiceParams.start.utcOffset()
-            })
-            .then((response) => {
-              download('invoice.pdf', response.xhr.response);
-              dispatch(finishInvoiceDownloadAfterSave());
-            })
-            .catch(() => dispatch(invoiceDownloadFailedAfterSave()));
+      .post(url)
+      .responseType('blob')
+      .set('Authorization', 'Bearer ' + authToken)
+      .send({
+        start: createInvoiceParams.start.unix(),
+        end: createInvoiceParams.end.unix(),
+        client: createInvoiceParams.client,
+        address: createInvoiceParams.address,
+        notes: createInvoiceParams.notes,
+        'user-rates': createInvoiceParams.userRates,
+        'tax-rates': createInvoiceParams.taxes,
+        currency: createInvoiceParams.currency,
+        'utc-offset': createInvoiceParams.start.utcOffset()
+      })
+      .then((response) => {
+        download('invoice.pdf', response.xhr.response);
+        dispatch(finishInvoiceDownloadAfterSave());
+      })
+      .catch(() => dispatch(invoiceDownloadFailedAfterSave()));
   };
 }
 
@@ -320,11 +320,28 @@ export function fetchAllInvoices() {
     }
     const url = '/api/invoices/';
     return Request
-            .get(url)
-            .set('Authorization', 'Bearer ' + authToken)
-            .then((response) => {
-              const normalizedInvoices = normalizeArray(response.body);
-              dispatch(receiveAllInvoices(normalizedInvoices));
-            })
+      .get(url)
+      .set('Authorization', 'Bearer ' + authToken)
+      .then((response) => {
+        const normalizedInvoices = normalizeArray(response.body);
+        dispatch(receiveInvoices(normalizedInvoices));
+      })
+  }
+}
+
+export function getInvoice(id) {
+  return (dispatch) => {
+    const authToken = getAuthToken();
+    if (!authToken) {
+      return;
+    }
+    const url = '/api/invoices/' + id + '/';
+    return Request
+      .get(url)
+      .set('Authorization', 'Bearer ' + authToken)
+      .then((response) => {
+        const normalizedInvoices = normalizeArray([response.body]);
+        dispatch(receiveInvoices(normalizedInvoices));
+      })
   }
 }

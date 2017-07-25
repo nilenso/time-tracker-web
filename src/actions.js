@@ -150,10 +150,10 @@ export function invoiceDownloadFailedAfterSave() {
   };
 }
 
-export const RECEIVE_ALL_INVOICES = 'RECEIVE_ALL_INVOICES';
-export function receiveAllInvoices(invoicesData) {
+export const RECEIVE_INVOICES = 'RECEIVE_INVOICES';
+export function receiveInvoices(invoicesData) {
   return {
-    type: RECEIVE_ALL_INVOICES,
+    type: RECEIVE_INVOICES,
     invoices: invoicesData
   }
 }
