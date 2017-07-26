@@ -18,7 +18,8 @@ import {
   finishInvoiceDownloadAfterSave,
   invoiceDownloadFailedAfterSave,
   receiveAllUsers,
-  receiveInvoices
+  receiveInvoices,
+  requestInvoice
 } from './actions';
 
 // Gets the auth token from the Redux store.
@@ -336,6 +337,7 @@ export function getInvoice(id) {
       return;
     }
     const url = '/api/invoices/' + id + '/';
+    dispatch(requestInvoice(id));
     return Request
       .get(url)
       .set('Authorization', 'Bearer ' + authToken)

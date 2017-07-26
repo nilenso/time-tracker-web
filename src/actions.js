@@ -150,6 +150,14 @@ export function invoiceDownloadFailedAfterSave() {
   };
 }
 
+export const REQUEST_INVOICE = 'REQUEST_INVOICE';
+export function requestInvoice(invoiceId) {
+  return {
+    type: REQUEST_INVOICE,
+    invoice: invoiceId
+  }
+}
+
 export const RECEIVE_INVOICES = 'RECEIVE_INVOICES';
 export function receiveInvoices(invoicesData) {
   return {

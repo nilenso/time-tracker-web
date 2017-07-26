@@ -165,10 +165,27 @@ function userDataReducer(state = Immutable.Map({
   }
 }
 
+function invoicePageReducer(state = Immutable.Map({
+  isFetching: false
+}), action) {
+  switch (action.type) {
+    case ActionTypes.REQUEST_INVOICE:
+      return state.merge({isFetching: true});
+
+    case ActionTypes.RECEIVE_INVOICES:
+      return state.merge({isFetching: false});
+
+    default:
+      return state;
+  }
+}
+
+
 export function rootReducer(state = Immutable.Map({}), action) {
     return state.merge({
       userData: userDataReducer(state.get('userData'), action),
       timers: timersReducer(state.get('timers'), action),
+      invoicePage: invoicePageReducer(state.get('invoicePage'), action),
       entities: entitiesReducer(state.get('entities'), action),
       wsConnection: wsConnectionReducer(state.get('wsConnection'), action),
       statusBarData: statusBarDataReducer(state.get('statusBarData'), action)
