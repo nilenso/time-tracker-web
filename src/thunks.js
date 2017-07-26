@@ -19,7 +19,8 @@ import {
   invoiceDownloadFailedAfterSave,
   receiveAllUsers,
   receiveInvoices,
-  requestInvoice
+  requestInvoice,
+  invoicePaymentFailed
 } from './actions';
 
 // Gets the auth token from the Redux store.
@@ -346,4 +347,26 @@ export function getInvoice(id) {
         dispatch(receiveInvoices(normalizedInvoices));
       })
   }
+}
+
+export function markInvoicePaid(id) {
+  return (dispatch) => {
+    const authToken = getAuthToken();
+    if (!authToken) {
+      return;
+    }
+    const url = '/api/invoices/' + id + '/';
+    dispatch(requestInvoice(id));
+    return Request
+      .put(url)
+      .send({ paid: true })
+      .set('Authorization', 'Bearer ' + authToken)
+      .then((response) => {
+        const normalizedInvoices = normalizeArray([response.body]);
+        dispatch(receiveInvoices(normalizedInvoices));
+      })
+      .catch(() => {
+        dispatch(invoicePaymentFailed());
+      });
+  };
 }

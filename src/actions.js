@@ -166,6 +166,13 @@ export function receiveInvoices(invoicesData) {
   }
 }
 
+export const INVOICE_TO_PAID_FAILED = 'INVOICE_PAYMENT_FAILED';
+export function invoicePaymentFailed() {
+  return {
+    type: INVOICE_TO_PAID_FAILED
+  }
+}
+
 // Status bar actions
 
 export const CLEAR_STATUS_BAR = 'CLEAR_STATUS_BAR';

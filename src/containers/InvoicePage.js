@@ -1,8 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import InvoiceTable from '../components/InvoiceTable';
+import { markInvoicePaid } from '../thunks'
 
 class InvoicePage extends Component {
+  constructor(props) {
+    super(props);
+
+    this.onInvoiceTableSubmit = this.onInvoiceTableSubmit.bind(this);
+  }
+
+  onInvoiceTableSubmit(invoiceId) {
+    this.props.dispatch(markInvoicePaid(invoiceId));
+    return;
+  }
+
   render() {
     const savedInvoice = this.props.entities
       .get('invoices')
@@ -15,7 +27,7 @@ class InvoicePage extends Component {
     }
     else {
       return (
-        <InvoiceTable invoice={savedInvoice} />
+        <InvoiceTable invoice={savedInvoice} onSubmit={this.onInvoiceTableSubmit}/>
       );
     }
   }
