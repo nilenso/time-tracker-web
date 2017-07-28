@@ -144,7 +144,7 @@ function statusBarDataReducer(state = Immutable.Map({
       return state.merge({text: 'invoice download failed :(',
                           timeoutSeconds: 4});
     
-    case ActionTypes.INVOICE_TO_PAID_FAILED:
+    case ActionTypes.INVOICE_PAYMENT_FAILED:
       return state.merge({text: 'marking invoice as paid failed :(',
                           timeoutSeconds: 4});
 
