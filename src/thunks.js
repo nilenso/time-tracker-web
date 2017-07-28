@@ -20,7 +20,8 @@ import {
   receiveAllUsers,
   receiveInvoices,
   requestInvoice,
-  invoicePaymentFailed
+  invoicePaymentFailed,
+  authFailed
 } from './actions';
 
 // Gets the auth token from the Redux store.
@@ -174,7 +175,7 @@ export function fetchTimersBetween(start, end) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
-      return;
+      dispatch(authFailed());
     }
     dispatch(requestTimers());
     const url = '/api/timers/';
@@ -199,7 +200,7 @@ export function fetchProjects() {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
-      return;
+      dispatch(authFailed());
     }
     return getAllProjects(authToken)
       .then((projects) => {
@@ -213,7 +214,7 @@ export function createProject(projectName) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
-      return;
+      dispatch(authFailed());
     }
     const url = '/api/projects/';
     return Request
@@ -234,7 +235,7 @@ export function fetchLocalUserData() {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
-      return;
+      dispatch(authFailed());
     }
     const url = '/api/users/me/';
     return Request
@@ -251,7 +252,7 @@ export function fetchAllUsers() {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
-      return;
+      dispatch(authFailed());
     }
     const url = '/api/users/';
     return Request
@@ -287,7 +288,7 @@ export function createInvoice(createInvoiceParams) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
-      return;
+      dispatch(authFailed());
     }
     const url = '/api/invoices/';
     dispatch(startInvoiceDownload());
@@ -318,7 +319,7 @@ export function fetchAllInvoices() {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
-      return;
+      dispatch(authFailed());
     }
     const url = '/api/invoices/';
     return Request
@@ -335,7 +336,7 @@ export function getInvoice(id) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
-      return;
+      dispatch(authFailed());
     }
     const url = '/api/invoices/' + id + '/';
     dispatch(requestInvoice(id));
@@ -353,7 +354,7 @@ export function markInvoicePaid(id) {
   return (dispatch) => {
     const authToken = getAuthToken();
     if (!authToken) {
-      return;
+      dispatch(authFailed());
     }
     const url = '/api/invoices/' + id + '/';
     dispatch(requestInvoice(id));

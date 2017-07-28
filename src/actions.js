@@ -166,10 +166,18 @@ export function receiveInvoices(invoicesData) {
   }
 }
 
-export const INVOICE_TO_PAID_FAILED = 'INVOICE_PAYMENT_FAILED';
+export const INVOICE_PAYMENT_FAILED = 'INVOICE_PAYMENT_FAILED';
 export function invoicePaymentFailed() {
   return {
-    type: INVOICE_TO_PAID_FAILED
+    type: INVOICE_PAYMENT_FAILED
+  }
+}
+
+// Generic catch-all method to signal Auth failures
+export const AUTH_FAILED = 'AUTH_FAILED';
+export function authFailed() {
+  return {
+    type: AUTH_FAILED
   }
 }
 
