@@ -332,24 +332,6 @@ export function fetchAllInvoices() {
   }
 }
 
-export function getInvoice(id) {
-  return (dispatch) => {
-    const authToken = getAuthToken();
-    if (!authToken) {
-      dispatch(authFailed());
-    }
-    const url = '/api/invoices/' + id + '/';
-    dispatch(requestInvoice(id));
-    return Request
-      .get(url)
-      .set('Authorization', 'Bearer ' + authToken)
-      .then((response) => {
-        const normalizedInvoices = normalizeArray([response.body]);
-        dispatch(receiveInvoices(normalizedInvoices));
-      })
-  }
-}
-
 export function markInvoicePaid(id) {
   return (dispatch) => {
     const authToken = getAuthToken();

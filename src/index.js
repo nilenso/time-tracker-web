@@ -22,8 +22,7 @@ ReactDOM.render(
         <Route path="admin" component={AdminPage} />
         <Route path="invoice" component={NewInvoicePage} />
         <Route path="invoices" component={InvoicesPage} />
-        <Route path="invoices/:invoiceId" component={InvoicePage} 
-          onEnter={(nextState) => {store.dispatch(getInvoice(nextState.params.invoiceId));}} />
+        <Route path="invoices/:invoiceId" component={InvoicePage} />
       </Route>
       <Redirect from="*" to="/" />
     </Router>
