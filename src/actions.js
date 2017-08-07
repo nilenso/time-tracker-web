@@ -150,11 +150,34 @@ export function invoiceDownloadFailedAfterSave() {
   };
 }
 
-export const RECEIVE_ALL_INVOICES = 'RECEIVE_ALL_INVOICES';
-export function receiveAllInvoices(invoicesData) {
+export const REQUEST_INVOICE = 'REQUEST_INVOICE';
+export function requestInvoice(invoiceId) {
   return {
-    type: RECEIVE_ALL_INVOICES,
+    type: REQUEST_INVOICE,
+    invoice: invoiceId
+  }
+}
+
+export const RECEIVE_INVOICES = 'RECEIVE_INVOICES';
+export function receiveInvoices(invoicesData) {
+  return {
+    type: RECEIVE_INVOICES,
     invoices: invoicesData
+  }
+}
+
+export const INVOICE_PAYMENT_FAILED = 'INVOICE_PAYMENT_FAILED';
+export function invoicePaymentFailed() {
+  return {
+    type: INVOICE_PAYMENT_FAILED
+  }
+}
+
+// Generic catch-all method to signal Auth failures
+export const AUTH_FAILED = 'AUTH_FAILED';
+export function authFailed() {
+  return {
+    type: AUTH_FAILED
   }
 }
 

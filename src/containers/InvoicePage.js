@@ -1,51 +1,35 @@
-import React from 'react';
-import Immutable from 'immutable';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { createInvoice } from '../thunks';
-import  CreateInvoiceForm from '../components/CreateInvoiceForm';
+import InvoiceTable from '../components/InvoiceTable';
+import { markInvoicePaid } from '../thunks'
 
-function InvoicePage({clients, users, onCreateClick}) {
-  return (
-    <CreateInvoiceForm onSubmit={onCreateClick}
-                         clients={clients}
-                         users={users}/>
-  );
-}
+class InvoicePage extends Component {
+  constructor(props) {
+    super(props);
 
-function clientFromProject(project) {
-  const name = project.get('name');
-  return name.split('|', 2)[0];
+    this.onInvoiceTableSubmit = this.onInvoiceTableSubmit.bind(this);
+  }
+
+  onInvoiceTableSubmit(invoiceId) {
+    this.props.dispatch(markInvoicePaid(invoiceId));
+    return;
+  }
+
+  render() {
+    const savedInvoice = this.props.entities
+      .get('invoices')
+      .get(parseInt(this.props.params.invoiceId, 10)); //Base 10
+
+    return (
+      <InvoiceTable invoice={savedInvoice} onSubmit={this.onInvoiceTableSubmit}/>
+    )
+  }
 }
 
 function mapStateToProps(state) {
-  const projects = state.getIn(['entities', 'projects']);
-  const users = state.getIn(['entities', 'users']);
-  if (!projects) {
-    return {
-      clients: Immutable.List([])
-    };
-  }
-  const clients = projects.valueSeq()
-                          .map(clientFromProject)
-                          .toSet()
-                          .toList()
-                          .sort();
   return {
-    clients: clients,
-    users: users
+    entities: state.get('entities')
   };
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    onCreateClick: (createInvoiceParams) => {
-      dispatch(createInvoice(Object.assign(createInvoiceParams, {
-        start: createInvoiceParams.start.clone().startOf('day'),
-        end: createInvoiceParams.end.clone().startOf('day').add(1, 'days')
-      })));
-    }
-  };
-}
-
-export default connect(mapStateToProps,
-                       mapDispatchToProps)(InvoicePage);
+export default connect(mapStateToProps)(InvoicePage);

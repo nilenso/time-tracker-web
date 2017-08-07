@@ -34,7 +34,7 @@ function entitiesReducer(state = Immutable.fromJS({
     case ActionTypes.RECEIVE_ALL_USERS:
       return state.mergeIn(['users'], action.users);
     
-    case ActionTypes.RECEIVE_ALL_INVOICES:
+    case ActionTypes.RECEIVE_INVOICES:
       return state.mergeIn(['invoices'], action.invoices);
 
     default:
@@ -142,6 +142,10 @@ function statusBarDataReducer(state = Immutable.Map({
 
     case ActionTypes.INVOICE_DOWNLOAD_FAILED:
       return state.merge({text: 'invoice download failed :(',
+                          timeoutSeconds: 4});
+    
+    case ActionTypes.INVOICE_PAYMENT_FAILED:
+      return state.merge({text: 'marking invoice as paid failed :(',
                           timeoutSeconds: 4});
 
     default:
