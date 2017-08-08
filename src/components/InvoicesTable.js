@@ -8,7 +8,7 @@ export default class InvoicesTable extends Component {
                             .valueSeq()
                             .sortBy(invoice => invoice.get('id'))
                             .reverse();
-    const titles = ['Id', 'Client', 'Address', 'Notes', 'Amount', 'Currency', 'From', 'To', 'Status']
+    const titles = ['Id', 'Client', 'Address', 'Notes', 'Amount', 'Currency', 'From', 'To', 'Status', 'Usable']
     const tableStyle = {
       "marginLeft": "5px"
     };
@@ -47,6 +47,7 @@ export default class InvoicesTable extends Component {
                 <td style={cellStyle}>{moment.unix(row.get('from_date') + row.get('utc_offset')).format('DD-MM-YYYY')}</td>
                 <td style={cellStyle}>{moment.unix(row.get('to_date') + row.get('utc_offset')).format('DD-MM-YYYY')}</td>
                 <td style={cellStyle}>{row.get('paid') ? 'Paid' : 'Due'}</td>
+                <td style={cellStyle}>{row.get('usable') ? 'Yes' : 'No'}</td>
               </tr>
             )}
           )}

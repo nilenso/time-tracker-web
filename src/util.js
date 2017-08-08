@@ -1,5 +1,10 @@
 import moment from 'moment';
 
+export const Events = {
+  PAID_EVENT: "mark-paid-event",
+  UNUSABLE_EVENT: "mark-unusable-event"
+}
+
 export function computeElapsedSeconds(startedEpoch, duration) {
   if (startedEpoch === null) {
     return duration;
