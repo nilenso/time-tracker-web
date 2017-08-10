@@ -173,6 +173,13 @@ export function invoicePaymentFailed() {
   }
 }
 
+export const MARK_INVOICE_UNUSABLE_FAILED = 'MARK_INVOICE_UNUSABLE_FAILED';
+export function markInvoiceUnusableFailed() {
+  return {
+    type: MARK_INVOICE_UNUSABLE_FAILED
+  }
+}
+
 // Generic catch-all method to signal Auth failures
 export const AUTH_FAILED = 'AUTH_FAILED';
 export function authFailed() {

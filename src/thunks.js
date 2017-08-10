@@ -21,6 +21,7 @@ import {
   receiveInvoices,
   requestInvoice,
   invoicePaymentFailed,
+  markInvoiceUnusableFailed,
   authFailed
 } from './actions';
 
@@ -350,6 +351,28 @@ export function markInvoicePaid(id) {
       })
       .catch(() => {
         dispatch(invoicePaymentFailed());
+      });
+  };
+}
+
+export function markInvoiceUnusable(id) {
+  return (dispatch) => {
+    const authToken = getAuthToken();
+    if (!authToken) {
+      dispatch(authFailed());
+    }
+    const url = '/api/invoices/' + id + '/';
+    dispatch(requestInvoice(id));
+    return Request
+      .put(url)
+      .send({ usable: false })
+      .set('Authorization', 'Bearer ' + authToken)
+      .then((response) => {
+        const normalizedInvoices = normalizeArray([response.body]);
+        dispatch(receiveInvoices(normalizedInvoices));
+      })
+      .catch(() => {
+        dispatch(markInvoiceUnusableFailed());
       });
   };
 }

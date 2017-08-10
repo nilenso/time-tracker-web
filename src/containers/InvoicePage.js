@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import InvoiceTable from '../components/InvoiceTable';
-import { markInvoicePaid } from '../thunks'
+import { markInvoicePaid, markInvoiceUnusable } from '../thunks';
+import { Events } from '../util';
 
 class InvoicePage extends Component {
   constructor(props) {
@@ -10,8 +11,14 @@ class InvoicePage extends Component {
     this.onInvoiceTableSubmit = this.onInvoiceTableSubmit.bind(this);
   }
 
-  onInvoiceTableSubmit(invoiceId) {
-    this.props.dispatch(markInvoicePaid(invoiceId));
+  onInvoiceTableSubmit(invoiceId, event_name) {
+    if (event_name == Events.PAID_EVENT) {
+      this.props.dispatch(markInvoicePaid(invoiceId));
+    }
+    else if (event_name == Events.UNUSABLE_EVENT) {
+      this.props.dispatch(markInvoiceUnusable(invoiceId));
+    }
+
     return;
   }
 

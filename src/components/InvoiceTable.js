@@ -1,21 +1,26 @@
 import React, { Component } from 'react';
+import { Events } from '../util';
 
 export default class InvoiceTable extends Component {
   constructor(props) {
     super(props);
-
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  handleSubmit(event) {
+  handlePaid(event) {
     event.preventDefault();
-    this.props.onSubmit(this.props.invoice.get('id'));
+    this.props.onSubmit(this.props.invoice.get('id'), Events.PAID_EVENT);
+  }
+
+  handleUnusable(event) {
+    event.preventDefault();
+    this.props.onSubmit(this.props.invoice.get('id'), Events.UNUSABLE_EVENT);
   }
 
   render() {
     const invoice = this.props.invoice;
 
     const isUnPaid = !this.props.invoice.get('paid');
+    const isUsable = this.props.invoice.get('usable') && isUnPaid;
 
     const tableStyle = {
       "marginLeft": "100px"
@@ -43,7 +48,7 @@ export default class InvoiceTable extends Component {
     }
 
     return (
-      <form onSubmit={this.handleSubmit}>
+      <form>
         <table style={tableStyle}>
           <thead style={headerStyle}>
             <tr>
@@ -76,13 +81,20 @@ export default class InvoiceTable extends Component {
               <td style={cellStyle}>Status</td>
               <td style={cellStyle}>{invoice.get('paid') ? 'Paid' : 'Unpaid'}</td>
             </tr>
+            <tr>
+              <td style={cellStyle}>Usable</td>
+              <td style={cellStyle}>{invoice.get('usable') ? 'Yes' : 'No'}</td>
+            </tr>
             <tr/>
           </tbody>
         </table>
         <h1/>
         {isUnPaid &&
-          <input style={buttonStyle} type="submit" value="Mark as Paid" />
+          <button style={buttonStyle} onClick={this.handlePaid.bind(this)}>Mark as Paid</button>
         }
+        {isUsable &&
+          <button style={buttonStyle} onClick={this.handleUnusable.bind(this)}>Mark as Unusable</button>
+        } 
       </form>
     )
   }
