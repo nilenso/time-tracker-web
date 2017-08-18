@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import InvoiceTable from '../components/InvoiceTable';
-import { markInvoicePaid, markInvoiceUnusable } from '../thunks';
+import { markInvoicePaid, markInvoiceUnusable, downloadInvoice } from '../thunks';
 import { Events } from '../util';
 
 class InvoicePage extends Component {
@@ -17,6 +17,9 @@ class InvoicePage extends Component {
     }
     else if (event_name == Events.UNUSABLE_EVENT) {
       this.props.dispatch(markInvoiceUnusable(invoiceId));
+    }
+    else if (event_name == Events.DOWNLOAD_EVENT) {
+      this.props.dispatch(downloadInvoice(invoiceId));
     }
 
     return;

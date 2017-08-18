@@ -16,6 +16,11 @@ export default class InvoiceTable extends Component {
     this.props.onSubmit(this.props.invoice.get('id'), Events.UNUSABLE_EVENT);
   }
 
+  handleDownload(event) {
+    event.preventDefault();
+    this.props.onSubmit(this.props.invoice.get('id'), Events.DOWNLOAD_EVENT);
+  }
+
   render() {
     const invoice = this.props.invoice;
 
@@ -94,6 +99,9 @@ export default class InvoiceTable extends Component {
         }
         {isUsable &&
           <button style={buttonStyle} onClick={this.handleUnusable.bind(this)}>Mark as Unusable</button>
+        }
+        {isUsable &&
+          <button style={buttonStyle} onClick={this.handleDownload.bind(this)}>Download</button>
         } 
       </form>
     )

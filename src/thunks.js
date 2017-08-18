@@ -22,6 +22,8 @@ import {
   requestInvoice,
   invoicePaymentFailed,
   markInvoiceUnusableFailed,
+  finishInvoiceDownload,
+  invoiceDownloadFailed,
   authFailed
 } from './actions';
 
@@ -374,5 +376,26 @@ export function markInvoiceUnusable(id) {
       .catch(() => {
         dispatch(markInvoiceUnusableFailed());
       });
+  };
+}
+
+export function downloadInvoice(id) {
+  return (dispatch) => {
+    const authToken = getAuthToken();
+    if (!authToken) {
+      dispatch(authFailed());
+    }
+    const url = '/api/invoices/' + id + '/';
+    dispatch(requestInvoice(id));
+    return Request
+      .get(url)
+      .responseType('blob')
+      .set('Authorization', 'Bearer ' + authToken)
+      .set('Content-Type', 'application/pdf')
+      .then((response) => {
+        download('invoice.pdf', response.xhr.response);
+        dispatch(finishInvoiceDownload());
+      })
+      .catch(() => dispatch(invoiceDownloadFailed()));
   };
 }
