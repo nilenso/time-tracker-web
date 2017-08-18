@@ -166,7 +166,7 @@ export function receiveInvoices(invoicesData) {
   }
 }
 
-// Invoice download action
+// Invoice update (mark paid, mark unusable) actions
 
 export const INVOICE_PAYMENT_FAILED = 'INVOICE_PAYMENT_FAILED';
 export function invoicePaymentFailed() {
