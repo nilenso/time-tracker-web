@@ -166,6 +166,8 @@ export function receiveInvoices(invoicesData) {
   }
 }
 
+// Invoice download action
+
 export const INVOICE_PAYMENT_FAILED = 'INVOICE_PAYMENT_FAILED';
 export function invoicePaymentFailed() {
   return {

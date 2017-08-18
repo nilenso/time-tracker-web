@@ -139,6 +139,10 @@ function statusBarDataReducer(state = Immutable.Map({
                                  Please check if 1. If you have enetered all necessary data \
                                  and 2. you have any entries between the given start and end dates',
                           timeoutSeconds: 3});
+    
+    case ActionTypes.FINISH_INVOICE_DOWNLOAD:
+      return state.merge({text: 'invoice successfully downloaded.',
+                          timeoutSeconds: 3});
 
     case ActionTypes.INVOICE_DOWNLOAD_FAILED:
       return state.merge({text: 'invoice download failed :(',

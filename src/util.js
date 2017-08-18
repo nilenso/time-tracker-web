@@ -2,7 +2,8 @@ import moment from 'moment';
 
 export const Events = {
   PAID_EVENT: "mark-paid-event",
-  UNUSABLE_EVENT: "mark-unusable-event"
+  UNUSABLE_EVENT: "mark-unusable-event",
+  DOWNLOAD_EVENT: "download-event"
 }
 
 export function computeElapsedSeconds(startedEpoch, duration) {
